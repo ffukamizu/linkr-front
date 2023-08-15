@@ -1,4 +1,4 @@
 export default function App() {
-  return (
-  );
+    return <ContentContainer></ContentContainer>;
 }
+const ContentContainer = styled.div``;
