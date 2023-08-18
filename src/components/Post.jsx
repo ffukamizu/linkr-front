@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiHeart } from 'react-icons/fi';
 import { styled } from 'styled-components';
-import { center } from '../styles.js';
+import { center } from '../style/utils';
 
 export function Post({ user, likes, link }) {
 

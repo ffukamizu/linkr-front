@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 import { Post } from '../components/Post.jsx';
 import image from '../components/image.svg';
 import photo from '../components/user.svg';
-import { center } from '../styles.js';
+import { center } from '../style/utils';
 
 export function HashtagPage() {
   const [posts, setPosts] = useState([
