@@ -36,7 +36,8 @@ export function HashtagPage() {
   return (
     <HashtagContainer>
       <h1>Hashtag Page</h1>
-      {posts.map(p => <Post key={p.id} user={p.user} text={p.text} link={p.link} />)}
+      {posts === 'Loading' && posts}
+      {Array.isArray(posts) && posts.map(p => <Post key={p.id} user={p.user} text={p.text} link={p.link} />)}
     </HashtagContainer>
   );
 }

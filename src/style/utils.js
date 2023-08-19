@@ -9,7 +9,7 @@ export const center = css`
 export const H1 = styled.h1`
   color: #fff;
   font-family: 'Oswald', sans-serif;
-  font-size: ${({ fs }) => fs};
+  font-size: 33px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;

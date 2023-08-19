@@ -22,14 +22,21 @@ export function Post({ text, user, link }) {
             </Link>
           ))}
         </p>
-        <LinkA href={link.url} target="_blank">
-          <div>
-            <h3>{link.title}</h3>
-            <p>{link.description}</p>
-            <p>{link.url}</p>
-          </div>
-          <img src={link.image} alt="Link" />
-        </LinkA>
+        {typeof link === 'object' && (
+          <LinkA href={link.url} target="_blank">
+            <div>
+              <h3>{link.title}</h3>
+              <p>{link.description}</p>
+              <p>{link.url}</p>
+            </div>
+            <img src={link.image} alt={link.title} />
+          </LinkA>
+        )}
+        {typeof link === 'string' && (
+          <LinkA>
+            <span>{link}</span>
+          </LinkA>
+        )}
       </div>
     </PostContainer>
   );
@@ -103,7 +110,7 @@ const LinkA = styled.a`
   padding: 9px 0px 9px 11px;
   color: #ffffff;
   width: 288px;
-  height: 115px;
+  max-height: 115px;
   background-color: transparent;
   border: 1px solid #4d4d4d;
   border-radius: 12px;
@@ -113,7 +120,6 @@ const LinkA = styled.a`
     max-width: 300px;
     h3 {
       color: #cecece;
-      font-family: Lato;
       font-size: 11px;
       font-style: normal;
       font-weight: 400;
@@ -133,7 +139,6 @@ const LinkA = styled.a`
       color: #cecece;
       text-decoration: none;
       display: inline-block;
-      font-family: Lato sans-serif;
       font-size: 9px;
       font-weight: 400;
       line-height: normal;
@@ -141,6 +146,19 @@ const LinkA = styled.a`
       margin: 4px 43px 0px 0px;
       word-break: break-all;
     }
+  }
+  span {
+    width: 100%;
+    text-align: start;
+    color: #cecece;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: normal;
+    margin-right: 43px;
+    margin: 4px 43px 0px 0px;
+    word-break: break-all;
   }
   img {
     justify-self: flex-end;

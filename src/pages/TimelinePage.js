@@ -14,7 +14,6 @@ export function TimelinePage() {
     server
       .get(`/posts`, {})
       .then(({ data }) => {
-        console.log([...posts, ...data]);
         setPosts(data);
         // if (data.length === 0) alert("There are no posts yet");
       })
@@ -26,7 +25,7 @@ export function TimelinePage() {
   return (
     <TimelineContainer>
       <Header />
-      <H1 fs="33px">timeline</H1>
+      <H1>timeline</H1>
       <CreatePost />
       {posts === 'Loading' && posts}
       {(Array.isArray(posts) && posts.length === 0) && 'There are no posts yet'}
