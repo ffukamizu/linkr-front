@@ -1,21 +1,28 @@
 import React from 'react';
 import { FiHeart } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import reactStringReplace from 'react-string-replace';
 import { styled } from 'styled-components';
 import { center } from '../style/utils';
 
-export function Post({ user, likes, link }) {
-
+export function Post({ text, user, link }) {
   return (
     <PostContainer>
       <LikesDiv>
         <img src={user.photo} alt="User" />
         <FiHeart size="20px" color="#ffffff" />
-        <p>{likes} likes</p>
+        {/* <p>{likes} likes</p> */}
       </LikesDiv>
       <div>
         <h2>{user.name}</h2>
-        <p></p>
-        <LinkA href={link.url}>
+        <p>
+          {reactStringReplace(text, /#(\w+\b)/g, (match, i) => (
+            <Link key={i} to={`/hashtag/${match}`}>
+              #{match}
+            </Link>
+          ))}
+        </p>
+        <LinkA href={link.url} target="_blank">
           <div>
             <h3>{link.title}</h3>
             <p>{link.description}</p>
@@ -28,12 +35,11 @@ export function Post({ user, likes, link }) {
   );
 }
 
-const PostContainer = styled.div`
+const PostContainer = styled.li`
   ${center}
   gap: 14px;
   width: 375px;
   padding: 10px 18px 15px 15px;
-  margin: 16px 0;
   background-color: #171717;
   h2 {
     color: #ffffff;
@@ -50,8 +56,18 @@ const PostContainer = styled.div`
     font-weight: 400;
     line-height: normal;
     margin-bottom: 13px;
-    span {
+    a {
+      text-decoration: none;
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
     }
+  }
+  @media (max-width: 625px) {
+    width: 100%;
   }
 `;
 
@@ -112,8 +128,6 @@ const LinkA = styled.a`
       font-style: normal;
       font-weight: 400;
       line-height: normal;
-      margin-right: 7px;
-      margin-top: 4px;
     }
     p {
       color: #cecece;
@@ -135,5 +149,6 @@ const LinkA = styled.a`
     border-radius: 0px 11px 11px 0px;
     margin-right: -1px;
     border: none;
+    object-fit: cover;
   }
 `;
