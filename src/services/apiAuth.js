@@ -1,12 +1,23 @@
-import axios from "axios";
+import axios from 'axios';
+const API_URL = process.env.REACT_APP_API_URL;
 
-const API_URL = process.env.REACT_APP_API_URL
-
-async function signUp(body){
-    const promise = await axios.post(`${API_URL}/signup`, body)
-    return promise
+async function signIn(obj, success, failure) {
+    axios
+        .post('/signin', obj)
+        .then((res) => {
+            success(res.data);
+        })
+        .catch((error) => {
+            alert(error.response.data);
+            failure();
+        });
 }
 
-const apiAuth = {signUp}
+async function signUp(body) {
+    const promise = await axios.post(`${API_URL}/signup`, body);
+    return promise;
+}
 
-export default apiAuth
+const apiAuth = { signUp, signIn };
+
+export default apiAuth;
