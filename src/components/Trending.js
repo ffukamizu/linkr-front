@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { styled } from 'styled-components';
+import useSession from '../hooks/useSession.js';
 import { server } from '../services/utils.js';
 
 export function Trending() {
   const [hashtags, setHashtags] = useState([]);
+  const { session } = useSession();
   useEffect(() => {
-    // In the future, this will require a token.
-    // , {headers: { Authorization: `Bearer ${user?.token}` }}
-    server.get('/posts/trending', {})
+    server
+      .get('/posts/trending', { headers: { Authorization: `Bearer ${session.token}` } })
       .then(({ data }) => {
         setHashtags(data);
       })

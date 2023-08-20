@@ -8,14 +8,10 @@ import { Trending } from './Trending.js';
 
 export function Timeline({ from, trending = true, updating = [] }) {
   const [posts, setPosts] = useState('Loading');
-  const test = useSession();
-  console.log(test);
+  const { session } = useSession();
   useEffect(() => {
-    // In the future, this will require a token.
-    // , {headers: { Authorization: `Bearer ${user?.token}` }}
-    setPosts('Loading');
     server
-      .get(from, {})
+      .get(from, { headers: { Authorization: `Bearer ${session.token}` } })
       .then(({ data }) => {
         setPosts(data);
       })
@@ -23,6 +19,7 @@ export function Timeline({ from, trending = true, updating = [] }) {
         setPosts(null);
         console.log(err);
       });
+    setPosts('Loading');
   }, [...updating]);
 
   return (
