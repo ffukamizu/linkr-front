@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from 'styled-components';
 import Logo from '../components/Logo';
 import StyledLink from '../style/StyledLink';
@@ -9,12 +9,12 @@ import useSession from '../hooks/useSession';
 import apiAuth from '../services/apiAuth';
 
 export default function SignInPage() {
-    const { email, setEmail } = useState('');
-    const { password, setPassword } = useState('');
+    const [ email, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
     const { signIn } = useSession();
     const navigate = useNavigate();
 
-    function userSignIn() {
+    function userSignIn(e) {
         e.preventDefault();
 
         const user = {

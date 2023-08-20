@@ -3,7 +3,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 async function signIn(obj, success, failure) {
     axios
-        .post('/signin', obj)
+        .post(`${API_URL}/signin`, obj)
         .then((res) => {
             success(res.data);
         })
