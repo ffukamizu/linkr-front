@@ -79,29 +79,29 @@ const PostContainer = styled.li`
 `;
 
 const LikesDiv = styled.div`
-  ${center}
-  align-self: flex-start;
-  flex-direction: column;
-  color: #ffffff;
-  svg {
-    width: 17px;
-    height: 15px;
-    margin: 17px 0px 12px;
-  }
-  img {
-    width: 40px;
-    height: 40px;
-    background-color: blue;
-    border-radius: 50%;
-  }
-  p {
+    ${center}
+    align-self: flex-start;
+    flex-direction: column;
     color: #ffffff;
-    text-align: center;
-    font-size: 9px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  }
+    svg {
+        width: 17px;
+        height: 15px;
+        margin: 17px 0px 12px;
+    }
+    img {
+        width: 40px;
+        height: 40px;
+        background-color: blue;
+        border-radius: 50%;
+    }
+    p {
+        color: #ffffff;
+        text-align: center;
+        font-size: 9px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
 `;
 
 const LinkA = styled.a`

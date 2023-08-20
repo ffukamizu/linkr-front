@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import useSession from '../hooks/useSession.js';
 import { server } from '../services/utils.js';
 import { LogH2 } from '../style/utils.js';
 import { Post } from './Post.js';
 
 export function Timeline({ from }) {
   const [posts, setPosts] = useState('Loading');
+  const test = useSession();
+  console.log(test);
   useEffect(() => {
     // In the future, this will require a token.
     // , {headers: { Authorization: `Bearer ${user?.token}` }}
