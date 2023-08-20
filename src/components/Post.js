@@ -15,7 +15,7 @@ export function Post({ text, likes, user, link }) {
       </LikesDiv>
       <div>
         <h2>{user.name}</h2>
-        <p>
+        <p className="text">
           {reactStringReplace(text, /#(\w+\b)/g, (match, i) => (
             <Link key={i} to={`/hashtag/${match}`} state={match}>
               #{match}
@@ -45,9 +45,11 @@ export function Post({ text, likes, user, link }) {
 const PostContainer = styled.li`
   ${center}
   gap: 14px;
-  width: 375px;
+  max-width: 611px;
+  width: 100%;
   padding: 10px 18px 15px 15px;
   background-color: #171717;
+  text-align: start;
   h2 {
     color: #ffffff;
     font-size: 17px;
@@ -56,7 +58,7 @@ const PostContainer = styled.li`
     line-height: normal;
     margin-bottom: 7px;
   }
-  p {
+  p.text {
     color: #b7b7b7;
     font-size: 15px;
     font-style: normal;
@@ -73,8 +75,26 @@ const PostContainer = styled.li`
       line-height: normal;
     }
   }
-  @media (max-width: 625px) {
+  @media (min-width: 625px) {
     width: 100%;
+    max-width: 611px;
+    min-width: 511px;
+    border-radius: 16px;
+    padding: 10px 21px 15px 20px;
+    gap: 18px;
+    h2 {
+      font-size: 19px;
+      line-height: 23px;
+      letter-spacing: 0em;
+    }
+    p {
+      font-size: 17px;
+      line-height: 20px;
+      letter-spacing: 0em;
+    }
+    >div:last-child {
+      width: 100%;
+    }
   }
 `;
 
@@ -83,16 +103,15 @@ const LikesDiv = styled.div`
   align-self: flex-start;
   flex-direction: column;
   color: #ffffff;
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
   svg {
     width: 17px;
     height: 15px;
     margin: 17px 0px 12px;
-  }
-  img {
-    width: 40px;
-    height: 40px;
-    background-color: blue;
-    border-radius: 50%;
   }
   p {
     color: #ffffff;
@@ -102,21 +121,40 @@ const LikesDiv = styled.div`
     font-weight: 400;
     line-height: normal;
   }
+  @media (min-width: 625px) {
+    img {
+      width: 50px;
+      height: 50px;
+      margin: -3px 0px 0px 0px;
+    }
+    svg {
+      width: 20px;
+      height: 18px;
+      margin: 19px 0px 4px;
+    }
+    p {
+      font-size: 11px;
+      line-height: 13px;
+      letter-spacing: 0em;
+    }
+  }
 `;
 
 const LinkA = styled.a`
   ${center}
   text-decoration: none;
-  padding: 9px 0px 9px 11px;
+  padding: 0px 0px 0px 11px;
   color: #ffffff;
-  width: 288px;
-  max-height: 115px;
+  max-width: 288px;
+  min-width: 244px;
+  width: 100%;
+  flex-shrink: 0;
+
   background-color: transparent;
   border: 1px solid #4d4d4d;
   border-radius: 12px;
   div {
     flex: 1;
-    padding: 14px 0px 14px;
     max-width: 300px;
     h3 {
       color: #cecece;
@@ -134,8 +172,9 @@ const LinkA = styled.a`
       font-style: normal;
       font-weight: 400;
       line-height: normal;
+      margin: 4px 0px 4px;
     }
-    p {
+    p:last-child {
       color: #cecece;
       text-decoration: none;
       display: inline-block;
@@ -147,7 +186,7 @@ const LinkA = styled.a`
       word-break: break-all;
     }
   }
-  span {
+  > span {
     width: 100%;
     text-align: start;
     color: #cecece;
@@ -168,5 +207,36 @@ const LinkA = styled.a`
     margin-right: -1px;
     border: none;
     object-fit: cover;
+  }
+  @media (min-width: 625px) {
+    padding: 0px 0px 0px 21px;
+    max-width: 503px;
+    min-width: none;
+    width: 100%;
+    div {
+      flex: 1;
+      h3 {
+        max-width: 250px;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: 0em;
+      }
+      p {
+        font-size: 11px;
+        line-height: 13px;
+        letter-spacing: 0em;
+      }
+    }
+    img {
+      width: 153px;
+      height: 155px;
+      border-radius: 0px 13px 13px 0px;
+      margin-left: 27px;
+    }
+    span {
+      flex: 1;
+      width: 100%;
+      padding: 0px 0px 0px 19px;
+    }
   }
 `;

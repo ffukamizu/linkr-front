@@ -23,4 +23,5 @@ export const LogH2 = styled.h2`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  margin-top: 20px;
 `;
