@@ -5,19 +5,19 @@ import reactStringReplace from 'react-string-replace';
 import { styled } from 'styled-components';
 import { center } from '../style/utils';
 
-export function Post({ text, user, link }) {
+export function Post({ text, likes, user, link }) {
   return (
     <PostContainer>
       <LikesDiv>
         <img src={user.photo} alt="User" />
         <FiHeart size="20px" color="#ffffff" />
-        {/* <p>{likes} likes</p> */}
+        {<p>{likes} likes</p>}
       </LikesDiv>
       <div>
         <h2>{user.name}</h2>
         <p>
           {reactStringReplace(text, /#(\w+\b)/g, (match, i) => (
-            <Link key={i} to={`/hashtag/${match}`}>
+            <Link key={i} to={`/hashtag/${match}`} state={match}>
               #{match}
             </Link>
           ))}
