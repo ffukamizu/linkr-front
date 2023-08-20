@@ -1,44 +1,43 @@
 import React, { useState } from 'react';
 import { styled } from 'styled-components';
 import { Post } from '../components/Post.jsx';
-import image from '../components/image.svg';
-import photo from '../components/user.svg';
 import { center } from '../style/utils';
 
 export function HashtagPage() {
   const [posts, setPosts] = useState([
     {
+      id: 44574755,
       text: 'Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material',
       link: {
         url: 'https://medium.com/@pshrmn/a-simple-react-router',
         title: `Como aplicar o Material UI em um projeto React`,
-        image,
+        image: '',
         description: `Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you
         click through to another page.`,
       },
-      likes: 13,
       user: {
         name: 'Juvenal Juvêncio',
-        photo,
+        photo: '',
       },
     },
   ]);
   /* useEffect(() => {
-    server.get(``, {
-      headers: { Authorization: `Bearer ${user?.token}` },
-    }).then(({ data }) => {
-      console.log(data);
-      setDetails(data);
+    // In the future, this will require a token.
+    // , {headers: { Authorization: `Bearer ${user?.token}` }} 
+  server.get(`/posts`).then(({ data }) => {
+    console.log([...posts, ...data]);
+    setPosts([...posts, ...data]);
     }).catch((err) => {
       console.log(err);
     });
-  }, []); */
-
+  }, []); 
+  */
 
   return (
     <HashtagContainer>
       <h1>Hashtag Page</h1>
-      {posts.map(p => <Post key={p.id} user={p.user} likes={p.likes} link={p.link} />)}
+      {posts === 'Loading' && posts}
+      {Array.isArray(posts) && posts.map(p => <Post key={p.id} user={p.user} text={p.text} link={p.link} />)}
     </HashtagContainer>
   );
 }
