@@ -1,22 +1,22 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
+import CreatePost from '../components/CreatePost.js';
 import { Header } from '../components/Header.js';
 import { Timeline } from '../components/Timeline.js';
 import { PageH1, center } from '../style/utils';
 
-export function HashtagPage() {
-  const { hashtag } = useParams();
+export function TimelinePage() {
   return (
-    <HashtagContainer>
+    <TimelineContainer>
       <Header />
-      <PageH1># {hashtag}</PageH1>
-      <Timeline from={`/posts/hashtag/${hashtag}`} />
-    </HashtagContainer>
+      <PageH1>timeline</PageH1>
+      <CreatePost />
+      <Timeline from="/posts" />
+    </TimelineContainer>
   );
 }
 
-const HashtagContainer = styled.div`
+const TimelineContainer = styled.div`
   ${center}
   justify-content: flex-start;
   flex-direction: column;
