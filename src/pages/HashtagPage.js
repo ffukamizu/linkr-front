@@ -11,7 +11,7 @@ export function HashtagPage() {
     <HashtagContainer>
       <Header />
       <PageH1># {hashtag}</PageH1>
-      <Timeline from={`/posts/hashtag/${hashtag}`} />
+      <Timeline from={`/posts/hashtag/${hashtag}`} updating={[hashtag]}/>
     </HashtagContainer>
   );
 }
@@ -21,16 +21,9 @@ const HashtagContainer = styled.div`
   justify-content: flex-start;
   flex-direction: column;
   background-color: #333333;
-  height: 100svh;
   > h1 {
     height: 49px;
     align-self: flex-start;
     margin: 19px 17px;
-  }
-  > ul {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px 0px;
   }
 `;
