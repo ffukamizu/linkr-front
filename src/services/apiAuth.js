@@ -1,9 +1,9 @@
 import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
 
-async function signIn(obj, success, failure) {
+async function signIn(body, success, failure) {
     axios
-        .post(`${API_URL}/signin`, obj)
+        .post(`${API_URL}/signin`, body)
         .then((res) => {
             success(res.data);
         })
