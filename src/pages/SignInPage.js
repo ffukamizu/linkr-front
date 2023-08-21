@@ -50,13 +50,15 @@ export default function SignInPage() {
                     placeholder="e-mail"
                     type="text"
                     onChange={(e) => setEmail(e.target.value)}
-                    disabled={isDisabled}></StyledLoginInput>
+                    disabled={isDisabled}
+                    value={email}></StyledLoginInput>
                 <StyledLoginInput
                     data-test="password"
                     required
                     placeholder="password"
                     type="password"
-                    onChange={(e) => setPassword(e.target.value)} disabled={isDisabled}></StyledLoginInput>
+                    onChange={(e) => setPassword(e.target.value)} disabled={isDisabled}
+                    value={password}></StyledLoginInput>
                 <StyledLoginButton data-test="login-btn" disabled={isDisabled}>Log In</StyledLoginButton>
                 <StyledLink
                     data-test="sign-up-Link"
