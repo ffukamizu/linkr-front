@@ -30,7 +30,7 @@ const CreatePost = ({userImage}) => {
       })
       .catch(error => {
         setIsPublishing(false);
-        alert("Houve um erro ao publicar seu link");
+        alert("There was an error publishing your link");
     });
   };
 
