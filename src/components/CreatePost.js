@@ -32,11 +32,11 @@ const CreatePost = ({userImage}) => {
   };
 
   return (
-    <SCNewPostContainer>
+    <SCNewPostContainer data-test="publish-box">
       <PostAvatar userImage={userImage}/>
       <h1>What are you going to share today?</h1>
       <Form onSubmit={publish}>
-        <input 
+        <input data-test="link"
           type="text" 
           placeholder="http:// ..."
           disabled={isPublishing}
@@ -44,7 +44,7 @@ const CreatePost = ({userImage}) => {
           onChange={e => setLink(e.target.value)}
           value={link}
         />
-        <textarea 
+        <textarea data-test="description"
           type="textarea" 
           placeholder="Awesome article about #javascript" 
           maxLength={200}
@@ -52,7 +52,7 @@ const CreatePost = ({userImage}) => {
           onChange={e => setText(e.target.value)}
           value={text}
         />
-        <PublishBtn 
+        <PublishBtn data-test="publish-btn"
           type="submit" 
           disabled={isPublishing}
         >
