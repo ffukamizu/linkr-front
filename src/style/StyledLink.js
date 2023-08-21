@@ -10,6 +10,10 @@ const StyledLink = styled(Link)`
     text-decoration: none;
     padding-bottom:3px;
     border-bottom:solid #FFFFFF 1px;
+    @media(max-width:450px){
+        font-size:17px;
+        margin-top:10px;
+    }
 `;
 
 export default StyledLink

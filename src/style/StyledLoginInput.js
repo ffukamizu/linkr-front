@@ -15,6 +15,11 @@ const StyledLoginInput = styled.input`
     padding:0;
     padding-left:17px;
     padding-bottom:3px;
+    @media(max-width:450px){
+        width:330px;
+        height:55px;
+        font-size:22px;
+    }
 `;
 
 export default StyledLoginInput

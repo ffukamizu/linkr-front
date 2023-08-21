@@ -75,6 +75,9 @@ const SCPageContentBox = styled.div`
     display: flex;
     width: 100%;
     height: 100%;
+    @media(max-width:450px) {
+        flex-direction:column
+  }
 `;
 
 const SCStyledForm = styled.form`
@@ -84,4 +87,10 @@ const SCStyledForm = styled.form`
     margin-top: 317px;
     align-items: center;
     gap: 15px;
+    @media(max-width:450px){
+        width:100%;
+        margin:0;
+        padding-top:40px;
+        gap:10px;
+    }
 `;
