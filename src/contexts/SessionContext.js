@@ -28,5 +28,5 @@ export default SessionContext;
 
 //para usar o context:
 //vá para o componente/pagina que vai consumir o context
-//import { useSession } from 'path/to/hooks/useSession.js'
-//const { token, id, name, photo, email } = useSession();
+//import useSession from '../hooks/useSession.js'
+//const { session, signIn, signOut } = useSession();
