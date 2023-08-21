@@ -17,6 +17,17 @@ const SCLogoBox = styled.div`
     padding-top:300px;
     color:white;
     padding-left:10%;
+    @media(max-width:450px) {
+        width:100%;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:flex-start;
+        padding:0;
+        padding-top:10px;
+        padding-bottom:27px;
+        height:175px;
+    }
 `;
 
 const SCLogoName = styled.span`
@@ -27,6 +38,11 @@ const SCLogoName = styled.span`
     font-weight: 700;
     line-height: normal;
     letter-spacing: 5.3px; 
+    @media(max-width:450px){
+        font-size: 76px; 
+        line-height:65px;
+        padding-top:10px;
+    }
 `;
 
 const SCLogoDesc = styled.span`
@@ -35,4 +51,7 @@ const SCLogoDesc = styled.span`
     font-style: normal;
     font-weight: 700;
     line-height: normal; 
+    @media(max-width: 450px){
+        font-size: 23px; 
+    }
 `;

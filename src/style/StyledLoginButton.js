@@ -13,6 +13,11 @@ const StyledLoginButton = styled.button`
     font-style: normal;
     font-weight: 700;
     line-height: normal; 
+    @media(max-width:450px){
+        width:330px;
+        height:55px;
+        font-size:22px;
+    }
 `;
 
 export default StyledLoginButton
