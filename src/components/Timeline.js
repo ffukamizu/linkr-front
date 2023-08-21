@@ -60,7 +60,7 @@ export function Timeline({ from, trending = true }) {
         {Array.isArray(posts) && (
           <ul>
             {posts.map((p) => (
-              <Post key={p.id} id={p.id} user={p.user} text={p.text} likes={p.likes} link={p.link} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setIdToDelete={setIdToDelete} />
+              <Post key={p.id} id={p.id} user={p.user} text={p.text} likes={p.likes} link={p.link} updating={updating} setUpdating={setUpdating} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setIdToDelete={setIdToDelete} />
             ))}
           </ul>
         )}

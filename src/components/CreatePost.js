@@ -30,7 +30,7 @@ const CreatePost = ({userImage}) => {
       })
       .catch(error => {
         setIsPublishing(false);
-        alert("Houve um erro ao publicar seu link");
+        alert("There was an error publishing your link");
     });
   };
 
@@ -97,7 +97,7 @@ const SCNewPostContainer = styled.div`
   }
 `;
 
-const Form = styled.form`
+export const Form = styled.form`
   position: relative;
   margin-top: 5px;
   height: 88%;

@@ -1,14 +1,52 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FiHeart } from 'react-icons/fi';
 import { TbTrashFilled } from 'react-icons/tb';
+import { FaPen } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import reactStringReplace from 'react-string-replace';
 import { styled } from 'styled-components';
 import { center } from '../style/utils';
 import SessionContext from '../contexts/SessionContext';
+import { Form } from './CreatePost';
+import { editService } from '../services/apiPost';
 
-export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelete }) {
+export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelete, updating, setUpdating }) {
   const { session } = useContext(SessionContext);
+
+  const [isPublishing, setIsPublishing] = useState()
+  const [isEditing, setIsEditin] = useState(false);
+  const [editValue, setEditValue] = useState('');
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if(isEditing) {
+      inputRef.current.focus();
+    };
+  }, [isEditing]);
+
+  const handleEdit = () => {
+    setEditValue(text);
+    setIsEditin(!isEditing);
+  };
+
+  const editPost = (e) => {
+    e.preventDefault();
+
+    setIsPublishing(true);
+
+    editService(id, editValue, session.token)
+      .then(res => {
+        console.log(res);
+        setIsPublishing(false);
+        setIsEditin(false);
+        setUpdating([...updating]);
+      })
+      .catch(error => {
+        setIsPublishing(false);
+        alert("Não foi possível salvar as alterações!");
+      });
+  };
 
   const deletePost = () => {
     setIdToDelete(id);
@@ -24,13 +62,27 @@ export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelet
       </LikesDiv>
       <div>
         <h2 data-test="username">{user.name}</h2>
-        <p data-test="description" className="text">
-          {reactStringReplace(text, /#(\w+\b)/g, (match, i) => (
-            <Link key={i} to={`/hashtag/${match}`} state={match}>
-              #{match}
-            </Link>
-          ))}
-        </p>
+
+        { isEditing ? (
+          <EditForm onSubmit={editPost}>
+            <input data-test='edit-input'
+            type="text" 
+            disabled={isPublishing}
+            ref={inputRef} 
+            onKeyUp={e => e.keyCode === 27 && setIsEditin(false)} 
+            onChange={(e) => setEditValue(e.target.value)} 
+            value={editValue}/> 
+          </EditForm>
+        ) : (
+          <p className="text">
+            {reactStringReplace(text, /#(\w+\b)/g, (match, i) => (
+              <Link key={i} to={`/hashtag/${match}`} state={match}>
+                #{match}
+              </Link>
+            )) }
+          </p>)
+        }
+
         {typeof link === 'object' && (
           <LinkA data-test="link" href={link.url} target="_blank">
             <div>
@@ -48,6 +100,11 @@ export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelet
         )}
       {session.id === user.id && 
         <Edit>
+          <FaPen data-test='edit-btn'
+            size={16}
+            color='white'
+            onClick={handleEdit}
+          />
           <TbTrashFilled data-test='delete-btn'
             size={20} 
             color='white'
@@ -266,4 +323,19 @@ const Edit = styled.div`
   right: 22px;
   display: flex;
   gap: 10px;
+`;
+
+const EditForm = styled(Form)`
+  margin-bottom: 5px;
+
+  input[type=text] {
+    color: #4C4C4C;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    height: 44px;
+    padding: 4px 9px;
+  };
 `;
