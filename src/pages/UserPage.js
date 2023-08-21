@@ -22,7 +22,7 @@ export function UserPage() {
       .catch((err) => {
         console.log(err);
       });
-  }, [id]);
+  }, [id, token]);
   return (
     <UserContainer>
       <Header />

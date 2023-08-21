@@ -29,7 +29,7 @@ export function Timeline({ from, trending = true }) {
         console.log(err);
       });
     setPosts('Loading');
-  }, [updating]);
+  }, [updating, from, token]);
 
   const deletePost = () => {
     setIsDeleting(true);
