@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 import useSession from '../hooks/useSession.js';
 import { server } from '../services/utils.js';
 
-export function Trending() {
+export function Trending({updating = []}) {
   const [hashtags, setHashtags] = useState([]);
   const { session } = useSession();
   const token = session === null ? undefined: session.token;
@@ -17,7 +17,7 @@ export function Trending() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [...updating]);
 
   return (
     <TrendingContainer data-test="trending">

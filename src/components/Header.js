@@ -1,9 +1,9 @@
-import React from 'react';
-import { styled } from 'styled-components';
-import { NavAvatar } from './Avatar';
-import useSession from '../hooks/useSession';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { styled } from 'styled-components';
+import useSession from '../hooks/useSession';
+import { NavAvatar } from './Avatar';
+import { Search } from './Search';
 
 export function Header() {
     const { session, signOut } = useSession();
@@ -17,6 +17,7 @@ export function Header() {
         <HeaderContainer>
             <div>
                 <StyledLogo>Linkr</StyledLogo>
+                <Search />
                 <UserContainer>
                     <MenuArrow onClick={toggleDropdown}>
                         <ion-icon name={dropdownOpen ? 'chevron-up-outline' : 'chevron-down-outline'}></ion-icon>
