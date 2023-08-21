@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import Logo from "../components/Logo";
-import StyledLink from "../style/StyledLink";
-import StyledLoginInput from "../style/StyledLoginInput";
-import StyledLoginButton from "../style/StyledLoginButton";
-import { useNavigate } from "react-router-dom";
 import apiAuth from "../services/apiAuth";
+import StyledLink from "../style/StyledLink";
+import StyledLoginButton from "../style/StyledLoginButton";
+import StyledLoginInput from "../style/StyledLoginInput";
 
 export default function SigUpPage(){
     const navigate = useNavigate()
@@ -39,12 +39,12 @@ export default function SigUpPage(){
         <SCPageContentBox>
             <Logo/>
             <SCStyledForm onSubmit={handleSignUp}>
-                <StyledLoginInput name="email" placeholder="e-mail" onChange={handleForm} value={form.email}/>
-                <StyledLoginInput name="password" placeholder="password" onChange={handleForm} value={form.password}/>
-                <StyledLoginInput name="name" placeholder="username" onChange={handleForm} value={form.name}/>
-                <StyledLoginInput name="photo" placeholder="picture url" onChange={handleForm}  value={form.photo}/>
-                <StyledLoginButton disabled={waitAPI} type="submit">Sign Up</StyledLoginButton>
-                <StyledLink to={"/"}>Switch back to log in</StyledLink>
+                <StyledLoginInput data-test="email" name="email" placeholder="e-mail" onChange={handleForm} value={form.email}/>
+                <StyledLoginInput data-test="password" name="password" placeholder="password" onChange={handleForm} value={form.password}/>
+                <StyledLoginInput data-test="username" name="name" placeholder="username" onChange={handleForm} value={form.name}/>
+                <StyledLoginInput data-test="picture-url" name="photo" placeholder="picture url" onChange={handleForm}  value={form.photo}/>
+                <StyledLoginButton data-test="sign-up-btn" disabled={waitAPI} type="submit">Sign Up</StyledLoginButton>
+                <StyledLink data-test="login-link" to={"/"}>Switch back to log in</StyledLink>
             </SCStyledForm>
         </SCPageContentBox>
     )

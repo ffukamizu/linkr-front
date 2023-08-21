@@ -40,17 +40,20 @@ export default function SignInPage() {
             <Logo />
             <SCStyledForm onSubmit={userSignIn}>
                 <StyledLoginInput
+                    data-test="email"
                     required
                     placeholder="e-mail"
                     type="text"
                     onChange={(e) => setEmail(e.target.value)}></StyledLoginInput>
                 <StyledLoginInput
+                    data-test="password"
                     required
                     placeholder="password"
                     type="password"
                     onChange={(e) => setPassword(e.target.value)}></StyledLoginInput>
-                <StyledLoginButton>Log In</StyledLoginButton>
+                <StyledLoginButton data-test="login-btn">Log In</StyledLoginButton>
                 <StyledLink
+                    data-test="sign-up-Link"
                     as={Link}
                     to={'/sign-up'}>
                     First time? Create an account!

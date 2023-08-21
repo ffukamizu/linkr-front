@@ -9,9 +9,10 @@ import { Trending } from './Trending.js';
 export function Timeline({ from, trending = true, updating = [] }) {
   const [posts, setPosts] = useState('Loading');
   const { session } = useSession();
+  const token = session === null ? undefined: session.token;
   useEffect(() => {
     server
-      .get(from, { headers: { Authorization: `Bearer ${session.token}` } })
+      .get(from, { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
         setPosts(data);
       })
@@ -25,9 +26,11 @@ export function Timeline({ from, trending = true, updating = [] }) {
   return (
     <TimelineContainer>
       <main>
-        {posts === 'Loading' && <LogH2>Loading</LogH2>}
-        {Array.isArray(posts) && posts.length === 0 && <LogH2>There are no posts yet</LogH2>}
-        {posts === null && <LogH2>An error occured while trying to fetch the posts, please refresh the page</LogH2>}
+        {posts === 'Loading' && <LogH2 data-test="message">Loading</LogH2>}
+        {Array.isArray(posts) && posts.length === 0 && <LogH2 data-test="message">There are no posts yet</LogH2>}
+        {posts === null && (
+          <LogH2 data-test="message">An error occured while trying to fetch the posts, please refresh the page</LogH2>
+        )}
         {Array.isArray(posts) && (
           <ul>
             {posts.map((p) => (

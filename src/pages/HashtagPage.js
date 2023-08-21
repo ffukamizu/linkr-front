@@ -10,7 +10,7 @@ export function HashtagPage() {
   return (
     <HashtagContainer>
       <Header />
-      <PageH1># {hashtag}</PageH1>
+      <PageH1 data-test="hashtag-title"># {hashtag}</PageH1>
       <Timeline from={`/posts/hashtag/${hashtag}`} updating={[hashtag]}/>
     </HashtagContainer>
   );
