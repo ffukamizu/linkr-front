@@ -9,13 +9,16 @@ import useSession from '../hooks/useSession';
 import apiAuth from '../services/apiAuth';
 
 export default function SignInPage() {
-    const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isDisabled, setIsDisabled] = useState(false);
     const { signIn } = useSession();
     const navigate = useNavigate();
 
     function userSignIn(e) {
         e.preventDefault();
+
+        setIsDisabled(true);
 
         const user = {
             email: email,
@@ -25,11 +28,13 @@ export default function SignInPage() {
         function loginSuccess(session) {
             signIn(session);
             navigate('/timeline');
+            setIsDisabled(false);
         }
 
         function loginFailure() {
             setEmail('');
             setPassword('');
+            setIsDisabled(false);
         }
 
         apiAuth.signIn(user, loginSuccess, loginFailure);
@@ -43,13 +48,15 @@ export default function SignInPage() {
                     required
                     placeholder="e-mail"
                     type="text"
-                    onChange={(e) => setEmail(e.target.value)}></StyledLoginInput>
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isDisabled}></StyledLoginInput>
                 <StyledLoginInput
                     required
                     placeholder="password"
                     type="password"
-                    onChange={(e) => setPassword(e.target.value)}></StyledLoginInput>
-                <StyledLoginButton>Log In</StyledLoginButton>
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isDisabled}></StyledLoginInput>
+                <StyledLoginButton disabled={isDisabled}>Log In</StyledLoginButton>
                 <StyledLink
                     as={Link}
                     to={'/sign-up'}>
