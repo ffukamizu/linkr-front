@@ -5,6 +5,8 @@ import { server } from '../services/utils.js';
 import { LogH2, center } from '../style/utils.js';
 import { Post } from './Post.js';
 import { Trending } from './Trending.js';
+import ReactModal from 'react-modal';
+import { deleteService } from '../services/apiPost.js';
 
 export function Timeline({ from, trending = true }) {
   const [posts, setPosts] = useState('Loading');
