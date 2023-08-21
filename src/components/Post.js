@@ -16,15 +16,15 @@ export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelet
   };
 
   return (
-    <PostContainer>
+    <PostContainer data-test="post">
       <LikesDiv>
         <img src={user.photo} alt="User" />
         <FiHeart size="20px" color="#ffffff" />
         {<p>{likes} likes</p>}
       </LikesDiv>
       <div>
-        <h2>{user.name}</h2>
-        <p className="text">
+        <h2 data-test="username">{user.name}</h2>
+        <p data-test="description" className="text">
           {reactStringReplace(text, /#(\w+\b)/g, (match, i) => (
             <Link key={i} to={`/hashtag/${match}`} state={match}>
               #{match}
@@ -32,7 +32,7 @@ export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelet
           ))}
         </p>
         {typeof link === 'object' && (
-          <LinkA href={link.url} target="_blank">
+          <LinkA data-test="link" href={link.url} target="_blank">
             <div>
               <h3>{link.title}</h3>
               <p>{link.description}</p>
@@ -42,7 +42,7 @@ export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelet
           </LinkA>
         )}
         {typeof link === 'string' && (
-          <LinkA>
+          <LinkA data-test="link">
             <span>{link}</span>
           </LinkA>
         )}

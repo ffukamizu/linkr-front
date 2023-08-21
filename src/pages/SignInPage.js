@@ -45,19 +45,23 @@ export default function SignInPage() {
             <Logo />
             <SCStyledForm onSubmit={userSignIn}>
                 <StyledLoginInput
+                    data-test="email"
                     required
                     placeholder="e-mail"
                     type="text"
                     onChange={(e) => setEmail(e.target.value)}
-                    disabled={isDisabled}></StyledLoginInput>
+                    disabled={isDisabled}
+                    value={email}></StyledLoginInput>
                 <StyledLoginInput
+                    data-test="password"
                     required
                     placeholder="password"
                     type="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={isDisabled}></StyledLoginInput>
-                <StyledLoginButton disabled={isDisabled}>Log In</StyledLoginButton>
+                    onChange={(e) => setPassword(e.target.value)} disabled={isDisabled}
+                    value={password}></StyledLoginInput>
+                <StyledLoginButton data-test="login-btn" disabled={isDisabled}>Log In</StyledLoginButton>
                 <StyledLink
+                    data-test="sign-up-link"
                     as={Link}
                     to={'/sign-up'}>
                     First time? Create an account!
@@ -71,6 +75,9 @@ const SCPageContentBox = styled.div`
     display: flex;
     width: 100%;
     height: 100%;
+    @media(max-width:450px) {
+        flex-direction:column
+  }
 `;
 
 const SCStyledForm = styled.form`
@@ -80,4 +87,10 @@ const SCStyledForm = styled.form`
     margin-top: 317px;
     align-items: center;
     gap: 15px;
+    @media(max-width:450px){
+        width:100%;
+        margin:0;
+        padding-top:40px;
+        gap:10px;
+    }
 `;

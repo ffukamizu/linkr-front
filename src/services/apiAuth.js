@@ -1,4 +1,8 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 async function signIn(body, success, failure) {
@@ -8,6 +12,7 @@ async function signIn(body, success, failure) {
             success(res.data);
         })
         .catch((error) => {
+            console.log(error);
             alert(error.response.data);
             failure();
         });

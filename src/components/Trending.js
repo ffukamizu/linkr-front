@@ -7,9 +7,10 @@ import { server } from '../services/utils.js';
 export function Trending() {
   const [hashtags, setHashtags] = useState([]);
   const { session } = useSession();
+  const token = session === null ? undefined: session.token;
   useEffect(() => {
     server
-      .get('/posts/trending', { headers: { Authorization: `Bearer ${session.token}` } })
+      .get('/posts/trending', { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
         setHashtags(data);
       })
@@ -19,13 +20,13 @@ export function Trending() {
   }, []);
 
   return (
-    <TrendingContainer>
+    <TrendingContainer data-test="trending">
       <div>
         <h2>trending</h2>
         <ul>
           {hashtags.map((h) => (
             <li key={h.tag}>
-              <Link to={`/hashtag/${h.tag.slice(1)}`} state={h.tag}>
+              <Link data-test="hashtag" to={`/hashtag/${h.tag.slice(1)}`} state={h.tag}>
                 {h.tag.replace('#', '# ')}
               </Link>
             </li>
