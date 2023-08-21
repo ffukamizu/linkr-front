@@ -97,7 +97,7 @@ const SCNewPostContainer = styled.div`
   }
 `;
 
-const Form = styled.form`
+export const Form = styled.form`
   position: relative;
   margin-top: 5px;
   height: 88%;
