@@ -3,11 +3,15 @@ import { styled } from "styled-components";
 import { PostAvatar } from "./Avatar";
 import StyledLoginButton from "../style/StyledLoginButton";
 import { publishService } from "../services/apiPost";
+import useSession from '../hooks/useSession.js';
 
 const CreatePost = ({userImage}) => {
   const [link, setLink] = useState('');
   const [text, setText] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
+
+  const { session } = useSession();
+  const token = session === null ? undefined: session.token;
 
   const publish = (e) => {
     e.preventDefault();
@@ -17,8 +21,7 @@ const CreatePost = ({userImage}) => {
 
     if(!link.includes('http://') && !link.includes('https://')) url = `http://${link}`;
 
-    // publishService(url, text, token) // need the token from useContext
-    publishService(url, text)
+    publishService(url, text, token) 
       .then(res => {
         console.log(res)
         setIsPublishing(false);
