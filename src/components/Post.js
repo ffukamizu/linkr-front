@@ -65,7 +65,7 @@ export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelet
 
         { isEditing ? (
           <EditForm onSubmit={editPost}>
-            <input 
+            <input data-test='edit-input'
             type="text" 
             disabled={isPublishing}
             ref={inputRef} 
@@ -100,7 +100,7 @@ export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelet
         )}
       {session.id === user.id && 
         <Edit>
-          <FaPen 
+          <FaPen data-test='edit-btn'
             size={16}
             color='white'
             onClick={handleEdit}
