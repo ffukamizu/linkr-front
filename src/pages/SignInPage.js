@@ -61,7 +61,7 @@ export default function SignInPage() {
                     value={password}></StyledLoginInput>
                 <StyledLoginButton data-test="login-btn" disabled={isDisabled}>Log In</StyledLoginButton>
                 <StyledLink
-                    data-test="sign-up-Link"
+                    data-test="sign-up-link"
                     as={Link}
                     to={'/sign-up'}>
                     First time? Create an account!

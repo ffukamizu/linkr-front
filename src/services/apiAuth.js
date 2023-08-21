@@ -8,6 +8,7 @@ async function signIn(body, success, failure) {
             success(res.data);
         })
         .catch((error) => {
+            console.log(error);
             alert(error.response.data);
             failure();
         });
