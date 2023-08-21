@@ -12,7 +12,7 @@ export function Header() {
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
-
+    
     return (
         <HeaderContainer>
             <div>
