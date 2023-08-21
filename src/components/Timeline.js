@@ -5,11 +5,19 @@ import { server } from '../services/utils.js';
 import { LogH2, center } from '../style/utils.js';
 import { Post } from './Post.js';
 import { Trending } from './Trending.js';
+import ReactModal from 'react-modal';
+import { deleteService } from '../services/apiPost.js';
 
-export function Timeline({ from, trending = true, updating = [] }) {
+export function Timeline({ from, trending = true }) {
   const [posts, setPosts] = useState('Loading');
   const { session } = useSession();
   const token = session === null ? undefined: session.token;
+    
+  const [updating, setUpdating] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState();
+  const [isDeleting, setIsDeleting] = useState(false);
+
   useEffect(() => {
     server
       .get(from, { headers: { Authorization: `Bearer ${token}` } })
@@ -21,7 +29,25 @@ export function Timeline({ from, trending = true, updating = [] }) {
         console.log(err);
       });
     setPosts('Loading');
-  }, [...updating]);
+  }, [updating]);
+
+  const deletePost = () => {
+    setIsDeleting(true);
+
+    deleteService(idToDelete, session.token)
+      .then(res => {
+        setIsDeleting(false);
+        setIsModalOpen(false);
+        setUpdating([...updating]);
+      })
+      .catch(error => {
+        setIsDeleting(false);
+        setIsModalOpen(false);
+        alert("Não foi possível excluir este post!");
+      });
+
+    setIdToDelete(null);
+  };
 
   return (
     <TimelineContainer>
@@ -34,10 +60,29 @@ export function Timeline({ from, trending = true, updating = [] }) {
         {Array.isArray(posts) && (
           <ul>
             {posts.map((p) => (
-              <Post key={p.id} user={p.user} text={p.text} likes={p.likes} link={p.link} />
+              <Post key={p.id} id={p.id} user={p.user} text={p.text} likes={p.likes} link={p.link} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setIdToDelete={setIdToDelete} />
             ))}
           </ul>
         )}
+        <ReactModal
+          isOpen={isModalOpen}
+          className="Modal"
+          overlayClassName="Overlay"
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={true}
+          shouldCloseOnEsc={true}
+        >
+          {
+            isDeleting ? <h1>Loading...</h1> 
+            : <>
+              <h1>Are you sure you want to delete this post?</h1>
+              <div>
+                <button data-test='cancel' onClick={() => setIsModalOpen(false)}>No, go back</button>
+                <button data-test='confirm' onClick={() => deletePost()}>Yes, delete it</button>
+              </div>
+            </>
+          }
+        </ReactModal>
       </main>
       {trending && <Trending />}
     </TimelineContainer>

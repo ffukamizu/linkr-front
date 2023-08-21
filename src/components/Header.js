@@ -50,7 +50,7 @@ const HeaderContainer = styled.header`
         justify-content: space-between;
         align-items: center;
         position: fixed;
-        z-index: 1;
+        z-index: 100;
         left: 0px;
         width: 100%;
         height: 72px;
