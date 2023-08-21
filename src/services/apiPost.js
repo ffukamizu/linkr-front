@@ -1,4 +1,7 @@
 import axios from "axios";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const publishService = async (link, text, token) => {
   const config = { headers: { Authorization: `Bearer ${token}` }};
