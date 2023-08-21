@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FiHeart } from 'react-icons/fi';
+import { TbTrashFilled } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
 import reactStringReplace from 'react-string-replace';
 import { styled } from 'styled-components';
 import { center } from '../style/utils';
+import SessionContext from '../contexts/SessionContext';
 
-export function Post({ text, likes, user, link }) {
+export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelete }) {
+  const { session } = useContext(SessionContext);
+
+  const deletePost = () => {
+    setIdToDelete(id);
+    setIsModalOpen(true);
+  };
+
   return (
     <PostContainer>
       <LikesDiv>
@@ -37,12 +46,22 @@ export function Post({ text, likes, user, link }) {
             <span>{link}</span>
           </LinkA>
         )}
+      {session.id === user.id && 
+        <Edit>
+          <TbTrashFilled data-test='delete-btn'
+            size={20} 
+            color='white'
+            onClick={deletePost}
+          />
+        </Edit>
+      }
       </div>
     </PostContainer>
   );
 }
 
 const PostContainer = styled.li`
+  position: relative;
   ${center}
   gap: 14px;
   max-width: 611px;
@@ -239,4 +258,12 @@ const LinkA = styled.a`
       padding: 0px 0px 0px 19px;
     }
   }
+`;
+
+const Edit = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 22px;
+  display: flex;
+  gap: 10px;
 `;
