@@ -22,7 +22,7 @@ export function Search() {
           console.log(err);
         });
     }
-  }, [value]);
+  }, [value, token]);
 
   return (
     <InputContainer>
