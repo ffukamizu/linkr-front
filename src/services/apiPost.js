@@ -22,3 +22,9 @@ export const editService = async (id, text, token) => {
 
   return axios.patch(`${API_URL}/posts/${id}`, { text }, config);
 };
+
+export const likePost = async (id,token) => {
+  const config = { headers: { Authorization: `Bearer ${token}` }};
+
+  return axios.post(`${API_URL}/likes`, {post:id} , config);
+}

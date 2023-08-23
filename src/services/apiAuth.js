@@ -10,7 +10,7 @@ async function signIn(body, success, failure) {
         })
         .catch((error) => {
             console.log(error);
-            alert(error.response.data);
+            alert(error.message);
             failure();
         });
 }
