@@ -8,12 +8,11 @@ import { Trending } from './Trending.js';
 import ReactModal from 'react-modal';
 import { deleteService } from '../services/apiPost.js';
 
-export function Timeline({ from, trending = true }) {
+export function Timeline({ from, updating, setUpdating, trending = true }) {
   const [posts, setPosts] = useState('Loading');
   const { session } = useSession();
   const token = session === null ? undefined: session.token;
     
-  const [updating, setUpdating] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState();
   const [isDeleting, setIsDeleting] = useState(false);

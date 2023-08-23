@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from 'styled-components';
 import CreatePost from '../components/CreatePost.js';
 import { Header } from '../components/Header.js';
@@ -7,14 +7,16 @@ import { Trending } from '../components/Trending.js';
 import { PageH1, center } from '../style/utils';
 
 export function TimelinePage() {
+  const [updating, setUpdating] = useState([]);
+
   return (
     <TimelineContainer>
       <Header />
       <Main>
         <div>
           <PageH1>timeline</PageH1>
-          <CreatePost />
-          <Timeline from="/posts" trending={false} />
+          <CreatePost updating={updating} setUpdating={setUpdating}/>
+          <Timeline from="/posts" trending={false} updating={updating} setUpdating={setUpdating}/>
         </div>
         <aside>
           <Trending />

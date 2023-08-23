@@ -31,7 +31,7 @@ export function Trending({ updating = [] }) {
                                 data-test="hashtag"
                                 to={`/hashtag/${h.tag.slice(1)}`}
                                 state={h.tag}>
-                                {h.tag.replace('#', '# ')}
+                                {h.tag}
                             </Link>
                         </li>
                     ))}
