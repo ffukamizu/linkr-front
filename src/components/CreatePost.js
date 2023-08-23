@@ -5,7 +5,7 @@ import StyledLoginButton from "../style/StyledLoginButton";
 import { publishService } from "../services/apiPost";
 import useSession from '../hooks/useSession.js';
 
-const CreatePost = ({userImage}) => {
+const CreatePost = ({userImage, updating, setUpdating}) => {
   const [link, setLink] = useState('');
   const [text, setText] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
@@ -24,6 +24,7 @@ const CreatePost = ({userImage}) => {
     publishService(url, text, token) 
       .then(res => {
         console.log(res)
+        setUpdating(...updating)
         setIsPublishing(false);
         setLink('');
         setText('');
