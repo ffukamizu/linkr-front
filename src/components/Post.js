@@ -10,8 +10,9 @@ import { center } from '../style/utils';
 import SessionContext from '../contexts/SessionContext';
 import { Form } from './CreatePost';
 import { editService, likePost } from '../services/apiPost';
+import { Tooltip } from 'react-tooltip';
 
-export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, updating, setUpdating }) {
+export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, updating, setUpdating, liker1, liker2 }) {
   const { session } = useContext(SessionContext);
   const [localNumLikes , setlocalNumLikes] = useState(Number(likes))
   const [localIsLiked, setLocalIsLiked] = useState(isLiked)
@@ -83,7 +84,24 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
       <LikesDiv>
         <img src={user.photo} alt="User" />
         {localIsLiked ? <FcLike onClick={()=> (handleLike(id))} size="20px"/> : <FiHeart onClick={()=> (handleLike(id))} size="20px" color="#ffffff" />}
-        {<p>{localNumLikes} likes</p>}
+        {<p data-tooltip-id="Likes" isLiked={localIsLiked}>{localNumLikes} likes</p>}
+        <Tooltip 
+          id="Likes" 
+          place="bottom" 
+          content={isLiked ? `Você, ${liker1} e outras ${likes-1} pessoas` : `${liker1}, ${liker2} e outras ${likes-1} pessoas` }
+          style={{ 
+            backgroundColor: "rgba(255, 255, 255, 0.90)",
+            color: "#505050", 
+            width:"auto", 
+            height:"24px", 
+            fontFamily:"Lato", 
+            fontSize:"11px", 
+            fontWeight:"700", 
+            display:"flex",
+            justifyContent:"center",
+            alignItems:"center"
+          }}
+          />
       </LikesDiv>
       <div>
         <h2 data-test="username">{user.name}</h2>
