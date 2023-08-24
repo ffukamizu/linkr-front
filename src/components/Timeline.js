@@ -23,9 +23,11 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
     server
       .get(from, { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
-        const [{ posts, ...owner }] = data;
-        setPosts(data.length === 1 ? posts : data);
-        setOwner(data.length === 1 ? owner : null);
+        const [{ posts, ...rest }] = data;
+        const [{ owner }] = data;
+
+        setPosts(owner ? data : posts);
+        setOwner(!owner ? rest : null);
       })
       .catch((err) => {
         setPosts(null);
