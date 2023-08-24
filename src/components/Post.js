@@ -12,7 +12,7 @@ import { Form } from './CreatePost';
 import { editService, likePost } from '../services/apiPost';
 import { Tooltip } from 'react-tooltip';
 
-export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, updating, setUpdating, liker1, liker2 }) {
+export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, updating, setUpdating, mrliker, srliker }) {
   const { session } = useContext(SessionContext);
   const [localNumLikes , setlocalNumLikes] = useState(Number(likes))
   const [localIsLiked, setLocalIsLiked] = useState(isLiked)
@@ -72,7 +72,6 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
           setlocalNumLikes(localNumLikes-1)
           setAwaitLike(false)
         }
-        console.log(isLiked)
       })
       .catch(err => {
         console.log(err)
@@ -84,11 +83,15 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
       <LikesDiv>
         <img src={user.photo} alt="User" />
         {localIsLiked ? <FcLike onClick={()=> (handleLike(id))} size="20px"/> : <FiHeart onClick={()=> (handleLike(id))} size="20px" color="#ffffff" />}
-        {<p data-tooltip-id="Likes" isLiked={localIsLiked}>{localNumLikes} likes</p>}
+        <p data-tooltip-id={`Likes${id}`} isLiked={localIsLiked}>{localNumLikes} likes</p>
         <Tooltip 
-          id="Likes" 
+          id={`Likes${id}`} 
           place="bottom" 
-          content={isLiked ? `Você, ${liker1} e outras ${likes-1} pessoas` : `${liker1}, ${liker2} e outras ${likes-1} pessoas` }
+          content={localNumLikes===0 ? "Ninguém curtiu ainda":
+                   mrliker ===  null ? "Você curtiu isso" :
+                   localIsLiked ? `Você, ${mrliker} e ${localNumLikes-2} pessoas` : 
+                   srliker === null ? `${mrliker} curtiu isso` : `${mrliker}, ${srliker} e ${localNumLikes-2} pessoas`
+                  }
           style={{ 
             backgroundColor: "rgba(255, 255, 255, 0.90)",
             color: "#505050", 
@@ -99,7 +102,8 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
             fontWeight:"700", 
             display:"flex",
             justifyContent:"center",
-            alignItems:"center"
+            alignItems:"center",
+            zIndex:"10"
           }}
           />
       </LikesDiv>
