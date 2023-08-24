@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import ReactModal from 'react-modal';
 import { styled } from 'styled-components';
 import useSession from '../hooks/useSession.js';
+import { deleteService, repostService } from '../services/apiPost.js';
 import { server } from '../services/utils.js';
 import { LogH2, center } from '../style/utils.js';
 import { Post } from './Post.js';
 import { Trending } from './Trending.js';
-import ReactModal from 'react-modal';
-import { deleteService, repostService } from '../services/apiPost.js';
 
 export function Timeline({ from, updating, setUpdating, trending = true }) {
   const [posts, setPosts] = useState('Loading');
+  const [owner, setOwner] = useState(null);
   const { session } = useSession();
-  const token = session === null ? undefined: session.token;
-    
+  const token = session === null ? undefined : session.token;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [idToRepost, setIdToRepost] = useState(null);
@@ -22,8 +23,9 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
     server
       .get(from, { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
-        setPosts(data);
-        console.log(data)
+        const [{ posts, ...owner }] = data;
+        setPosts(data.length === 1 ? posts : data);
+        setOwner(data.length === 1 ? owner : null);
       })
       .catch((err) => {
         setPosts(null);
@@ -36,15 +38,15 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
     setIsDeleting(true);
 
     deleteService(idToDelete, session.token)
-      .then(res => {
+      .then((res) => {
         setIsDeleting(false);
         setIsModalOpen(false);
         setUpdating([...updating]);
       })
-      .catch(error => {
+      .catch((error) => {
         setIsDeleting(false);
         setIsModalOpen(false);
-        alert("Não foi possível excluir este post!");
+        alert('Não foi possível excluir este post!');
       });
 
     setIdToDelete(null);
@@ -52,21 +54,23 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
 
   const repostPost = () => {
     setIsDeleting(true);
-    
-    repostService(idToRepost, session.token )
-      .then(res => {
+
+    repostService(idToRepost, session.token)
+      .then((res) => {
         setIsDeleting(false);
         setIsModalOpen(false);
         setUpdating([...updating]);
       })
-      .catch(error => {
+      .catch((error) => {
         setIsDeleting(false);
         setIsModalOpen(false);
-        alert("Não foi possível repostar este link!")
+        alert('Não foi possível repostar este link!');
       });
 
     setIdToRepost(false);
   };
+
+  const setters = [setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating];
 
   return (
     <TimelineContainer>
@@ -74,13 +78,27 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
         {posts === 'Loading' && <LogH2 data-test="message">Loading</LogH2>}
         {Array.isArray(posts) && posts.length === 0 && <LogH2 data-test="message">There are no posts yet</LogH2>}
         {posts === null && (
-          <LogH2 data-test="message">An error occured while trying to fetch the posts, please refresh the page</LogH2>
+          <LogH2 data-test="message">
+            An error occured while trying to fetch the posts, please refresh the page
+          </LogH2>
         )}
         {Array.isArray(posts) && (
           <ul>
             {posts.map((p) => (
-              <Post key={p.id} id={p.id} user={p.user} text={p.text} isLiked={p.isLiked} likes={p.likes} link={p.link} updating={updating} 
-              setUpdating={setUpdating} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setIdToDelete={setIdToDelete} setIdToRepost={setIdToRepost} mrliker={p.mrliker} srliker={p.srliker}/>
+              <Post
+                id={p.id}
+                key={p.id}
+                text={p.text}
+                link={p.link}
+                owner={owner || p.owner}
+                likes={p.likes}
+                setters={setters}
+                updating={updating}
+                isLiked={p.isLiked}
+                mrliker={p.mrliker}
+                srliker={p.srliker}
+                isModalOpen={isModalOpen}
+              />
             ))}
           </ul>
         )}
@@ -92,44 +110,49 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
           shouldCloseOnOverlayClick={true}
           shouldCloseOnEsc={true}
         >
-          {
-            idToDelete ?
-              isDeleting ? <h1>Loading...</h1> 
-              : <>
-                  <h1>Are you sure you want to delete this post?</h1>
-                  <div>
-                  <button 
-                    data-test='cancel' 
+          {idToDelete ? (
+            isDeleting ? (
+              <h1>Loading...</h1>
+            ) : (
+              <>
+                <h1>Are you sure you want to delete this post?</h1>
+                <div>
+                  <button
+                      data-test="cancel"
                     onClick={() => {
-                        setIdToDelete(null);
-                        setIsModalOpen(false);
-                      }
-                    }
+                      setIdToDelete(null);
+                      setIsModalOpen(false);
+                    }}
                   >
                     No, go back
                   </button>
-                    <button data-test='confirm' onClick={() => deletePost()}>Yes, delete it</button>
+                    <button data-test="confirm" onClick={() => deletePost()}>
+                      Yes, delete it
+                    </button>
                   </div>
                 </>
-            : isDeleting ? <h1>Loading...</h1> 
-              :
-              <>
-                <h1>Do you want to re-post this link?</h1>
-                <div>
-                  <button 
-                    data-test='cancel' 
-                    onClick={() => {
+            )
+          ) : isDeleting ? (
+            <h1>Loading...</h1>
+          ) : (
+            <>
+              <h1>Do you want to re-post this link?</h1>
+              <div>
+                <button
+                      data-test="cancel"
+                      onClick={() => {
                         setIdToRepost(null);
                         setIsModalOpen(false);
-                      }
-                    }
-                  >
-                    No, cancel
-                  </button>
-                  <button data-test='confirm' onClick={() => repostPost()}>Yes, share!</button>
-                </div>
-              </>
-          }
+                      }}
+                    >
+                      No, cancel
+                    </button>
+                    <button data-test="confirm" onClick={() => repostPost()}>
+                      Yes, share!
+                    </button>
+                  </div>
+                </>
+          )}
         </ReactModal>
       </main>
       {trending && <Trending />}
