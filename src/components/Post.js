@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FiHeart } from 'react-icons/fi';
 import { FcLike } from "react-icons/fc";
 import { TbTrashFilled } from 'react-icons/tb';
-import { FaPen } from 'react-icons/fa';
+import { FaPen, FaRetweet } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import reactStringReplace from 'react-string-replace';
 import { styled } from 'styled-components';
@@ -12,7 +12,7 @@ import { Form } from './CreatePost';
 import { editService, likePost } from '../services/apiPost';
 import { Tooltip } from 'react-tooltip';
 
-export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, updating, setUpdating, mrliker, srliker }) {
+export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, setIdToRepost, updating, setUpdating, mrliker, srliker }) {
   const { session } = useContext(SessionContext);
   const [localNumLikes , setlocalNumLikes] = useState(Number(likes))
   const [localIsLiked, setLocalIsLiked] = useState(isLiked)
@@ -78,6 +78,11 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
       })
   }
 
+  const repost = () => {
+    setIdToRepost(id);
+    setIsModalOpen(true);
+  };
+
   return (
     <PostContainer data-test="post">
       <LikesDiv>
@@ -106,6 +111,12 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
             zIndex:"10"
           }}
           />
+
+          <FaRetweet
+            data-test='repost-btn'
+            onClick={repost}
+          />
+          <p data-test='repost-counter'>{`0 re-posts`}</p>
       </LikesDiv>
       <div>
         <h2 data-test="username">{user.name}</h2>
