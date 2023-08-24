@@ -103,14 +103,15 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
       <LikesDiv>
         <img src={owner.photo} alt="User" />
         {localIsLiked ? (
-          <FcLike onClick={() => handleLike(id)} size="20px" />
+          <FcLike data-test="like-btn" onClick={() => handleLike(id)} size="20px" />
         ) : (
-          <FiHeart onClick={() => handleLike(id)} size="20px" color="#ffffff" />
+          <FiHeart data-test="like-btn" onClick={() => handleLike(id)} size="20px" color="#ffffff" />
         )}
-        <p data-tooltip-id={`Likes${id}`} isLiked={localIsLiked}>
+        <p data-test="counter" data-tooltip-id={`Likes${id}`} isLiked={localIsLiked}>
           {localNumLikes} likes
         </p>
         <Tooltip
+          data-test="tooltip"
           id={`Likes${id}`}
           place="bottom"
           content={
