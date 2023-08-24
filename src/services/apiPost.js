@@ -29,6 +29,10 @@ export const likePost = async (id,token) => {
   return axios.post(`${API_URL}/likes`, {post:id} , config);
 }
 
+export const extractMetadata = async (url) => {
+  return axios.get(`https://jsonlink.io/api/extract?url=${url}`);
+};
+
 export const repostService = async (id, token) => {
   const config = { headers: { Authorization: `Bearer ${token}` }};
 

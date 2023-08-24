@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { FiHeart } from 'react-icons/fi';
-import { FcLike } from "react-icons/fc";
-import { TbTrashFilled } from 'react-icons/tb';
 import { FaPen, FaRetweet } from 'react-icons/fa';
+import { FcLike } from "react-icons/fc";
+import { FiHeart } from 'react-icons/fi';
+import { TbTrashFilled } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
 import reactStringReplace from 'react-string-replace';
-import { styled } from 'styled-components';
-import { center } from '../style/utils';
-import SessionContext from '../contexts/SessionContext';
-import { Form } from './CreatePost';
-import { editService, likePost } from '../services/apiPost';
 import { Tooltip } from 'react-tooltip';
+import { styled } from 'styled-components';
+import SessionContext from '../contexts/SessionContext';
+import { editService, extractMetadata, likePost } from '../services/apiPost';
+import { center } from '../style/utils';
+import { Form } from './CreatePost';
 
 export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, setIdToRepost, updating, setUpdating, mrliker, srliker }) {
   const { session } = useContext(SessionContext);
@@ -22,6 +22,21 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
   const [awaitLike, setAwaitLike] = useState(false)
 
   const inputRef = useRef(null);
+  const [linkPreview, setLinkPreview] = useState(null);
+  const { url = link, title = '', description = '', image = '' } = linkPreview || {};
+
+  useEffect(() => {
+    extractMetadata(link)
+      .then(({ data: { url, title, description, images: [image] } }) => {
+        setLinkPreview({ url, title, description, image });
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log({ url: link });
+        setLinkPreview(null);
+      });
+    // setLinkPreview();
+  }, [link]);
 
   useEffect(() => {
     if(isEditing) {
@@ -141,19 +156,21 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
           </p>)
         }
 
-        {typeof link === 'object' && (
-          <LinkA data-test="link" href={link.url} target="_blank">
+        {linkPreview && (
+          <LinkA data-test="link" href={url} target="_blank">
             <div>
-              <h3>{link.title}</h3>
-              <p>{link.description}</p>
-              <p>{link.url}</p>
+              <h3>{title}</h3>
+              <p>{description}</p>
+              <span>{url}</span>
             </div>
-            <img src={link.image} alt={link.title} />
+            <img src={image} alt={title} />
           </LinkA>
         )}
-        {typeof link === 'string' && (
+        {(linkPreview === null) && (
           <LinkA data-test="link">
-            <span>{link}</span>
+            <div>
+              <span>{link}</span>
+            </div>
           </LinkA>
         )}
       {session.id === user.id && 
@@ -193,6 +210,7 @@ const PostContainer = styled.li`
     margin-bottom: 7px;
   }
   p.text {
+    max-width: 288px;
     color: #b7b7b7;
     font-size: 15px;
     font-style: normal;
@@ -279,9 +297,8 @@ const LinkA = styled.a`
   text-decoration: none;
   padding: 0px 0px 0px 11px;
   color: #ffffff;
-  max-width: 288px;
-  min-width: 244px;
-  width: 100%;
+  width: 288px;
+  min-width: 288px;
   flex-shrink: 0;
 
   background-color: transparent;
@@ -290,6 +307,7 @@ const LinkA = styled.a`
   div {
     flex: 1;
     max-width: 300px;
+    width: 100%;
     h3 {
       color: #cecece;
       font-size: 11px;
@@ -298,7 +316,7 @@ const LinkA = styled.a`
       line-height: normal;
 
       max-width: 291px;
-      margin-right: 43px;
+      margin-right: 23px;
     }
     p {
       color: #9b9595;
@@ -308,30 +326,28 @@ const LinkA = styled.a`
       line-height: normal;
       margin: 4px 0px 4px;
     }
-    p:last-child {
+    p {
       color: #cecece;
       text-decoration: none;
       display: inline-block;
       font-size: 9px;
       font-weight: 400;
       line-height: normal;
-      margin-right: 43px;
-      margin: 4px 43px 0px 0px;
-      word-break: break-all;
+      margin: 4px 23px 0px 0px;
     }
+    span {
+      width: 100%;
+      text-align: start;
+      color: #cecece;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: normal;
+      margin: 4px 23px 4px 0px;
+      word-break: break-all;
   }
-  > span {
-    width: 100%;
-    text-align: start;
-    color: #cecece;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: normal;
-    margin-right: 43px;
-    margin: 4px 43px 0px 0px;
-    word-break: break-all;
+  
   }
   img {
     justify-self: flex-end;
@@ -345,21 +361,30 @@ const LinkA = styled.a`
   @media (min-width: 625px) {
     padding: 0px 0px 0px 21px;
     max-width: 503px;
-    min-width: none;
+    min-width: 375px;
     width: 100%;
     div {
+      width: 100%;
       flex: 1;
       h3 {
+        width: 100%;
         max-width: 250px;
         font-size: 16px;
         line-height: 19px;
         letter-spacing: 0em;
+        margin-right: 0px;
       }
       p {
+        width: 100%;
         font-size: 11px;
         line-height: 13px;
         letter-spacing: 0em;
-      }
+      }   
+      span {
+      flex: 1;
+      width: 100%;
+      padding: 0px 0px 0px 19px;
+    }
     }
     img {
       width: 153px;
@@ -367,11 +392,7 @@ const LinkA = styled.a`
       border-radius: 0px 13px 13px 0px;
       margin-left: 27px;
     }
-    span {
-      flex: 1;
-      width: 100%;
-      padding: 0px 0px 0px 19px;
-    }
+
   }
 `;
 
