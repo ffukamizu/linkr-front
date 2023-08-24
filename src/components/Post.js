@@ -11,6 +11,7 @@ import SessionContext from '../contexts/SessionContext';
 import { editService, extractMetadata, likePost } from '../services/apiPost';
 import { center } from '../style/utils';
 import { Form } from './CreatePost';
+import { AiOutlineComment } from "react-icons/ai";
 
 export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker, srliker, setters }) {
   const [ setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating ] = setters;
@@ -21,6 +22,7 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
   const [isEditing, setIsEditin] = useState(false);
   const [editValue, setEditValue] = useState('');
   const [awaitLike, setAwaitLike] = useState(false);
+  const [comments, setComments] = useState([])
 
   const inputRef = useRef(null);
   const [linkPreview, setLinkPreview] = useState(null);
@@ -98,6 +100,10 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
     setIsModalOpen(true);
   };
 
+  function getComments(id){
+    console.log(id)
+  }
+
   return (
     <PostContainer data-test="post">
       <LikesDiv>
@@ -139,7 +145,8 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
             zIndex: '10',
           }}
         />
-
+        <AiOutlineComment onClick={()=> getComments(id)}/>
+        <p>{comments.length} comments</p>
         <FaRetweet data-test="repost-btn" onClick={repost} />
         <p data-test="repost-counter">{`0 re-posts`}</p>
       </LikesDiv>
@@ -276,6 +283,7 @@ const LikesDiv = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    white-space:nowrap;
   }
   @media (min-width: 625px) {
     img {
