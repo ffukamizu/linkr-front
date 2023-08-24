@@ -6,7 +6,7 @@ import { LogH2, center } from '../style/utils.js';
 import { Post } from './Post.js';
 import { Trending } from './Trending.js';
 import ReactModal from 'react-modal';
-import { deleteService } from '../services/apiPost.js';
+import { deleteService, repostService } from '../services/apiPost.js';
 
 export function Timeline({ from, updating, setUpdating, trending = true }) {
   const [posts, setPosts] = useState('Loading');
@@ -14,7 +14,8 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
   const token = session === null ? undefined: session.token;
     
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [idToDelete, setIdToDelete] = useState();
+  const [idToDelete, setIdToDelete] = useState(null);
+  const [idToRepost, setIdToRepost] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -49,6 +50,24 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
     setIdToDelete(null);
   };
 
+  const repostPost = () => {
+    setIsDeleting(true);
+    
+    repostService(idToRepost, session.token )
+      .then(res => {
+        setIsDeleting(false);
+        setIsModalOpen(false);
+        setUpdating([...updating]);
+      })
+      .catch(error => {
+        setIsDeleting(false);
+        setIsModalOpen(false);
+        alert("Não foi possível repostar este link!")
+      });
+
+    setIdToRepost(false);
+  };
+
   return (
     <TimelineContainer>
       <main>
@@ -61,7 +80,7 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
           <ul>
             {posts.map((p) => (
               <Post key={p.id} id={p.id} user={p.user} text={p.text} isLiked={p.isLiked} likes={p.likes} link={p.link} updating={updating} 
-              setUpdating={setUpdating} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setIdToDelete={setIdToDelete} mrliker={p.mrliker} srliker={p.srliker}/>
+              setUpdating={setUpdating} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setIdToDelete={setIdToDelete} setIdToRepost={setIdToRepost} mrliker={p.mrliker} srliker={p.srliker}/>
             ))}
           </ul>
         )}
@@ -74,14 +93,42 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
           shouldCloseOnEsc={true}
         >
           {
-            isDeleting ? <h1>Loading...</h1> 
-            : <>
-              <h1>Are you sure you want to delete this post?</h1>
-              <div>
-                <button data-test='cancel' onClick={() => setIsModalOpen(false)}>No, go back</button>
-                <button data-test='confirm' onClick={() => deletePost()}>Yes, delete it</button>
-              </div>
-            </>
+            idToDelete ?
+              isDeleting ? <h1>Loading...</h1> 
+              : <>
+                  <h1>Are you sure you want to delete this post?</h1>
+                  <div>
+                  <button 
+                    data-test='cancel' 
+                    onClick={() => {
+                        setIdToDelete(null);
+                        setIsModalOpen(false);
+                      }
+                    }
+                  >
+                    No, go back
+                  </button>
+                    <button data-test='confirm' onClick={() => deletePost()}>Yes, delete it</button>
+                  </div>
+                </>
+            : isDeleting ? <h1>Loading...</h1> 
+              :
+              <>
+                <h1>Do you want to re-post this link?</h1>
+                <div>
+                  <button 
+                    data-test='cancel' 
+                    onClick={() => {
+                        setIdToRepost(null);
+                        setIsModalOpen(false);
+                      }
+                    }
+                  >
+                    No, cancel
+                  </button>
+                  <button data-test='confirm' onClick={() => repostPost()}>Yes, share!</button>
+                </div>
+              </>
           }
         </ReactModal>
       </main>
