@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FaPen, FaRetweet } from 'react-icons/fa';
-import { FcLike } from "react-icons/fc";
+import { FcLike } from 'react-icons/fc';
 import { FiHeart } from 'react-icons/fi';
 import { TbTrashFilled } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
@@ -12,14 +12,15 @@ import { editService, extractMetadata, likePost } from '../services/apiPost';
 import { center } from '../style/utils';
 import { Form } from './CreatePost';
 
-export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, setIdToRepost, updating, setUpdating, mrliker, srliker }) {
+export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker, srliker, setters }) {
+  const { setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating } = setters;
   const { session } = useContext(SessionContext);
-  const [localNumLikes , setlocalNumLikes] = useState(Number(likes))
-  const [localIsLiked, setLocalIsLiked] = useState(isLiked)
-  const [isPublishing, setIsPublishing] = useState()
+  const [localNumLikes, setlocalNumLikes] = useState(Number(likes));
+  const [localIsLiked, setLocalIsLiked] = useState(isLiked);
+  const [isPublishing, setIsPublishing] = useState();
   const [isEditing, setIsEditin] = useState(false);
   const [editValue, setEditValue] = useState('');
-  const [awaitLike, setAwaitLike] = useState(false)
+  const [awaitLike, setAwaitLike] = useState(false);
 
   const inputRef = useRef(null);
   const [linkPreview, setLinkPreview] = useState(null);
@@ -27,21 +28,20 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
 
   useEffect(() => {
     extractMetadata(link)
-      .then(({ data: { url, title, description, images: [image] } }) => {
-        setLinkPreview({ url, title, description, image });
-      })
+      .then(
+        ({ data: { url, title, description, images: [image]} }) => {
+          setLinkPreview({ url, title, description, image });
+        }
+      )
       .catch((err) => {
-        console.log(err);
-        console.log({ url: link });
         setLinkPreview(null);
       });
-    // setLinkPreview();
   }, [link]);
 
   useEffect(() => {
-    if(isEditing) {
+    if (isEditing) {
       inputRef.current.focus();
-    };
+    }
   }, [isEditing]);
 
   const handleEdit = () => {
@@ -55,15 +55,15 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
     setIsPublishing(true);
 
     editService(id, editValue, session.token)
-      .then(res => {
+      .then((res) => {
         console.log(res);
         setIsPublishing(false);
         setIsEditin(false);
         setUpdating([...updating]);
       })
-      .catch(error => {
+      .catch((error) => {
         setIsPublishing(false);
-        alert("Não foi possível salvar as alterações!");
+        alert('Não foi possível salvar as alterações!');
       });
   };
 
@@ -72,25 +72,25 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
     setIsModalOpen(true);
   };
 
-  function handleLike(id){
-    if(awaitLike) return
-    setAwaitLike(true)
+  function handleLike(id) {
+    if (awaitLike) return;
+    setAwaitLike(true);
     likePost(id, session.token)
-      .then(res => {
-        console.log(res,typeof likes, typeof localNumLikes)
-        if(res.status === 201){
-          setLocalIsLiked(true)
-          setlocalNumLikes(localNumLikes+1)
-          setAwaitLike(false)
-        }else{
-          setLocalIsLiked(false)
-          setlocalNumLikes(localNumLikes-1)
-          setAwaitLike(false)
+      .then((res) => {
+        console.log(res, typeof likes, typeof localNumLikes);
+        if (res.status === 201) {
+          setLocalIsLiked(true);
+          setlocalNumLikes(localNumLikes + 1);
+          setAwaitLike(false);
+        } else {
+          setLocalIsLiked(false);
+          setlocalNumLikes(localNumLikes - 1);
+          setAwaitLike(false);
         }
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   const repost = () => {
@@ -101,50 +101,61 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
   return (
     <PostContainer data-test="post">
       <LikesDiv>
-        <img src={user.photo} alt="User" />
-        {localIsLiked ? <FcLike onClick={()=> (handleLike(id))} size="20px"/> : <FiHeart onClick={()=> (handleLike(id))} size="20px" color="#ffffff" />}
-        <p data-tooltip-id={`Likes${id}`} isLiked={localIsLiked}>{localNumLikes} likes</p>
-        <Tooltip 
-          id={`Likes${id}`} 
-          place="bottom" 
-          content={localNumLikes===0 ? "Ninguém curtiu ainda":
-                   mrliker ===  null ? "Você curtiu isso" :
-                   localIsLiked ? `Você, ${mrliker} e ${localNumLikes-2} pessoas` : 
-                   srliker === null ? `${mrliker} curtiu isso` : `${mrliker}, ${srliker} e ${localNumLikes-2} pessoas`
-                  }
-          style={{ 
-            backgroundColor: "rgba(255, 255, 255, 0.90)",
-            color: "#505050", 
-            width:"auto", 
-            height:"24px", 
-            fontFamily:"Lato", 
-            fontSize:"11px", 
-            fontWeight:"700", 
-            display:"flex",
-            justifyContent:"center",
-            alignItems:"center",
-            zIndex:"10"
+        <img src={owner.photo} alt="User" />
+        {localIsLiked ? (
+          <FcLike onClick={() => handleLike(id)} size="20px" />
+        ) : (
+          <FiHeart onClick={() => handleLike(id)} size="20px" color="#ffffff" />
+        )}
+        <p data-tooltip-id={`Likes${id}`} isLiked={localIsLiked}>
+          {localNumLikes} likes
+        </p>
+        <Tooltip
+          id={`Likes${id}`}
+          place="bottom"
+          content={
+            localNumLikes === 0
+              ? 'Ninguém curtiu ainda'
+              : mrliker === null
+                ? 'Você curtiu isso'
+                : localIsLiked
+                  ? `Você, ${mrliker} e ${localNumLikes - 2} pessoas`
+                  : srliker === null
+                    ? `${mrliker} curtiu isso`
+                    : `${mrliker}, ${srliker} e ${localNumLikes - 2} pessoas`
+          }
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.90)',
+            color: '#505050',
+            width: 'auto',
+            height: '24px',
+            fontFamily: 'Lato',
+            fontSize: '11px',
+            fontWeight: '700',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '10',
           }}
-          />
+        />
 
-          <FaRetweet
-            data-test='repost-btn'
-            onClick={repost}
-          />
-          <p data-test='repost-counter'>{`0 re-posts`}</p>
+        <FaRetweet data-test="repost-btn" onClick={repost} />
+        <p data-test="repost-counter">{`0 re-posts`}</p>
       </LikesDiv>
       <div>
-        <h2 data-test="username">{user.name}</h2>
+        <h2 data-test="username">{owner.name}</h2>
 
-        { isEditing ? (
+        {isEditing ? (
           <EditForm onSubmit={editPost}>
-            <input data-test='edit-input'
-            type="text" 
-            disabled={isPublishing}
-            ref={inputRef} 
-            onKeyUp={e => e.keyCode === 27 && setIsEditin(false)} 
-            onChange={(e) => setEditValue(e.target.value)} 
-            value={editValue}/> 
+            <input
+              data-test="edit-input"
+              type="text"
+              disabled={isPublishing}
+              ref={inputRef}
+              onKeyUp={(e) => e.keyCode === 27 && setIsEditin(false)}
+              onChange={(e) => setEditValue(e.target.value)}
+              value={editValue}
+            />
           </EditForm>
         ) : (
           <p data-test="description" className="text">
@@ -152,9 +163,9 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
               <Link key={i} to={`/hashtag/${match}`} state={match}>
                 #{match}
               </Link>
-            )) }
-          </p>)
-        }
+            ))}
+          </p>
+        )}
 
         {linkPreview && (
           <LinkA data-test="link" href={url} target="_blank">
@@ -166,27 +177,19 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
             <img src={image} alt={title} />
           </LinkA>
         )}
-        {(linkPreview === null) && (
+        {linkPreview === null && (
           <LinkA data-test="link">
             <div>
               <span>{link}</span>
             </div>
           </LinkA>
         )}
-      {session.id === user.id && 
-        <Edit>
-          <FaPen data-test='edit-btn'
-            size={16}
-            color='white'
-            onClick={handleEdit}
-          />
-          <TbTrashFilled data-test='delete-btn'
-            size={20} 
-            color='white'
-            onClick={deletePost}
-          />
-        </Edit>
-      }
+        {session.id === owner.id && (
+          <Edit>
+            <FaPen data-test="edit-btn" size={16} color="white" onClick={handleEdit} />
+            <TbTrashFilled data-test="delete-btn" size={20} color="white" onClick={deletePost} />
+          </Edit>
+        )}
       </div>
     </PostContainer>
   );
@@ -244,7 +247,7 @@ const PostContainer = styled.li`
       line-height: 20px;
       letter-spacing: 0em;
     }
-    >div:last-child {
+    > div:last-child {
       width: 100%;
     }
   }
@@ -346,8 +349,7 @@ const LinkA = styled.a`
       line-height: normal;
       margin: 4px 23px 4px 0px;
       word-break: break-all;
-  }
-  
+    }
   }
   img {
     justify-self: flex-end;
@@ -379,12 +381,12 @@ const LinkA = styled.a`
         font-size: 11px;
         line-height: 13px;
         letter-spacing: 0em;
-      }   
+      }
       span {
-      flex: 1;
-      width: 100%;
-      padding: 0px 0px 0px 19px;
-    }
+        flex: 1;
+        width: 100%;
+        padding: 0px 0px 0px 19px;
+      }
     }
     img {
       width: 153px;
@@ -392,7 +394,6 @@ const LinkA = styled.a`
       border-radius: 0px 13px 13px 0px;
       margin-left: 27px;
     }
-
   }
 `;
 
@@ -407,8 +408,8 @@ const Edit = styled.div`
 const EditForm = styled(Form)`
   margin-bottom: 5px;
 
-  input[type=text] {
-    color: #4C4C4C;
+  input[type='text'] {
+    color: #4c4c4c;
     font-family: Lato;
     font-size: 14px;
     font-style: normal;
@@ -416,5 +417,5 @@ const EditForm = styled(Form)`
     line-height: normal;
     height: 44px;
     padding: 4px 9px;
-  };
+  }
 `;
