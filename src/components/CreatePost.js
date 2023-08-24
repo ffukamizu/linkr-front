@@ -24,10 +24,10 @@ const CreatePost = ({userImage, updating, setUpdating}) => {
     publishService(url, text, token) 
       .then(res => {
         console.log(res)
-        setUpdating(...updating)
         setIsPublishing(false);
         setLink('');
         setText('');
+        setUpdating(...updating)
       })
       .catch(error => {
         setIsPublishing(false);
