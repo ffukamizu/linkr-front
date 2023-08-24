@@ -13,7 +13,7 @@ import { center } from '../style/utils';
 import { Form } from './CreatePost';
 
 export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker, srliker, setters }) {
-  const { setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating } = setters;
+  const [ setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating ] = setters;
   const { session } = useContext(SessionContext);
   const [localNumLikes, setlocalNumLikes] = useState(Number(likes));
   const [localIsLiked, setLocalIsLiked] = useState(isLiked);
