@@ -147,7 +147,7 @@ export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setI
             value={editValue}/> 
           </EditForm>
         ) : (
-          <p className="text">
+          <p data-test="description" className="text">
             {reactStringReplace(text, /#(\w+\b)/g, (match, i) => (
               <Link key={i} to={`/hashtag/${match}`} state={match}>
                 #{match}
