@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FiHeart } from 'react-icons/fi';
+import { FcLike } from "react-icons/fc";
 import { TbTrashFilled } from 'react-icons/tb';
 import { FaPen } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -8,14 +9,17 @@ import { styled } from 'styled-components';
 import { center } from '../style/utils';
 import SessionContext from '../contexts/SessionContext';
 import { Form } from './CreatePost';
-import { editService } from '../services/apiPost';
+import { editService, likePost } from '../services/apiPost';
+import { Tooltip } from 'react-tooltip';
 
-export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelete, updating, setUpdating }) {
+export function Post({ id, text, isLiked,likes, user, link, setIsModalOpen, setIdToDelete, updating, setUpdating, mrliker, srliker }) {
   const { session } = useContext(SessionContext);
-
+  const [localNumLikes , setlocalNumLikes] = useState(Number(likes))
+  const [localIsLiked, setLocalIsLiked] = useState(isLiked)
   const [isPublishing, setIsPublishing] = useState()
   const [isEditing, setIsEditin] = useState(false);
   const [editValue, setEditValue] = useState('');
+  const [awaitLike, setAwaitLike] = useState(false)
 
   const inputRef = useRef(null);
 
@@ -53,12 +57,55 @@ export function Post({ id, text, likes, user, link, setIsModalOpen, setIdToDelet
     setIsModalOpen(true);
   };
 
+  function handleLike(id){
+    if(awaitLike) return
+    setAwaitLike(true)
+    likePost(id, session.token)
+      .then(res => {
+        console.log(res,typeof likes, typeof localNumLikes)
+        if(res.status === 201){
+          setLocalIsLiked(true)
+          setlocalNumLikes(localNumLikes+1)
+          setAwaitLike(false)
+        }else{
+          setLocalIsLiked(false)
+          setlocalNumLikes(localNumLikes-1)
+          setAwaitLike(false)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   return (
     <PostContainer data-test="post">
       <LikesDiv>
         <img src={user.photo} alt="User" />
-        <FiHeart size="20px" color="#ffffff" />
-        {<p>{likes} likes</p>}
+        {localIsLiked ? <FcLike onClick={()=> (handleLike(id))} size="20px"/> : <FiHeart onClick={()=> (handleLike(id))} size="20px" color="#ffffff" />}
+        <p data-tooltip-id={`Likes${id}`} isLiked={localIsLiked}>{localNumLikes} likes</p>
+        <Tooltip 
+          id={`Likes${id}`} 
+          place="bottom" 
+          content={localNumLikes===0 ? "Ninguém curtiu ainda":
+                   mrliker ===  null ? "Você curtiu isso" :
+                   localIsLiked ? `Você, ${mrliker} e ${localNumLikes-2} pessoas` : 
+                   srliker === null ? `${mrliker} curtiu isso` : `${mrliker}, ${srliker} e ${localNumLikes-2} pessoas`
+                  }
+          style={{ 
+            backgroundColor: "rgba(255, 255, 255, 0.90)",
+            color: "#505050", 
+            width:"auto", 
+            height:"24px", 
+            fontFamily:"Lato", 
+            fontSize:"11px", 
+            fontWeight:"700", 
+            display:"flex",
+            justifyContent:"center",
+            alignItems:"center",
+            zIndex:"10"
+          }}
+          />
       </LikesDiv>
       <div>
         <h2 data-test="username">{user.name}</h2>

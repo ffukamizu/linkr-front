@@ -22,6 +22,7 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
       .get(from, { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
         setPosts(data);
+        console.log(data)
       })
       .catch((err) => {
         setPosts(null);
@@ -59,7 +60,8 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
         {Array.isArray(posts) && (
           <ul>
             {posts.map((p) => (
-              <Post key={p.id} id={p.id} user={p.user} text={p.text} likes={p.likes} link={p.link} updating={updating} setUpdating={setUpdating} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setIdToDelete={setIdToDelete} />
+              <Post key={p.id} id={p.id} user={p.user} text={p.text} isLiked={p.isLiked} likes={p.likes} link={p.link} updating={updating} 
+              setUpdating={setUpdating} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setIdToDelete={setIdToDelete} mrliker={p.mrliker} srliker={p.srliker}/>
             ))}
           </ul>
         )}
