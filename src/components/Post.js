@@ -213,7 +213,7 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
         )}
       </div>
     </PostContainer>
-    {showComs && <Comments id={id} comments={comments} setComments={setComments}/>}
+    {showComs && <Comments id={id} owner={owner} comments={comments} setComments={setComments}/>}
 
     </PostOutterContainer>
   );
