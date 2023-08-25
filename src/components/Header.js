@@ -12,21 +12,22 @@ export function Header() {
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
-    
+    const photo =
+        'https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8fDA%3D&w=1000&q=80';
     return (
         <HeaderContainer>
             <div>
-                <Link to='/timeline'>
-                  <StyledLogo>Linkr</StyledLogo>
+                <Link to="/timeline">
+                    <StyledLogo>Linkr</StyledLogo>
                 </Link>
                 <Search />
                 <UserContainer>
                     <MenuArrow onClick={toggleDropdown}>
                         <ion-icon name={dropdownOpen ? 'chevron-up-outline' : 'chevron-down-outline'}></ion-icon>
                     </MenuArrow>
-                    {session.photo && (
+                    {photo && (
                         <UserProfile onClick={toggleDropdown}>
-                            <NavAvatar userImage={session.photo} />
+                            <NavAvatar userImage={photo} />
                         </UserProfile>
                     )}
                     {dropdownOpen && (
@@ -47,24 +48,24 @@ export function Header() {
 
 const HeaderContainer = styled.header`
     height: 72px;
-    
+
     > div {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      z-index: 100;
-      left: 0px;
-      width: 100%;
-      height: 72px;
-      flex-shrink: 0;
-      background: #151515;
-      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-      padding-inline: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        z-index: 100;
+        left: 0px;
+        width: 100%;
+        height: 72px;
+        flex-shrink: 0;
+        background: #151515;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        padding-inline: 30px;
     }
 
     a {
-      text-decoration: none;
+        text-decoration: none;
     }
 `;
 
@@ -97,7 +98,7 @@ const UserProfile = styled.div`
     height: 53px;
     flex-shrink: 0;
     border-radius: 26.5px;
-    background: url(<path-to-image>), lightgray -3.07px -0.143px / 109.434% 100.538% no-repeat;
+    background: lightgray -3.07px -0.143px / 109.434% 100.538% no-repeat;
 `;
 
 const DropdownMenu = styled.div`
