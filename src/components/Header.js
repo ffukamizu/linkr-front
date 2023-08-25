@@ -12,20 +12,22 @@ export function Header() {
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
-    
+
     return (
         <HeaderContainer>
             <div>
-                <Link to='/timeline'>
-                  <StyledLogo>Linkr</StyledLogo>
+                <Link to="/timeline">
+                    <StyledLogo>Linkr</StyledLogo>
                 </Link>
                 <Search />
-                <UserContainer>
-                    <MenuArrow onClick={toggleDropdown}>
+                <UserContainer
+                    onClick={toggleDropdown}
+                    data-test="avatar">
+                    <MenuArrow>
                         <ion-icon name={dropdownOpen ? 'chevron-up-outline' : 'chevron-down-outline'}></ion-icon>
                     </MenuArrow>
                     {session.photo && (
-                        <UserProfile onClick={toggleDropdown}>
+                        <UserProfile>
                             <NavAvatar userImage={session.photo} />
                         </UserProfile>
                     )}
@@ -47,24 +49,24 @@ export function Header() {
 
 const HeaderContainer = styled.header`
     height: 72px;
-    
+
     > div {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      z-index: 100;
-      left: 0px;
-      width: 100%;
-      height: 72px;
-      flex-shrink: 0;
-      background: #151515;
-      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-      padding-inline: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        z-index: 100;
+        left: 0px;
+        width: 100%;
+        height: 72px;
+        flex-shrink: 0;
+        background: #151515;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        padding-inline: 30px;
     }
 
     a {
-      text-decoration: none;
+        text-decoration: none;
     }
 `;
 
@@ -97,7 +99,7 @@ const UserProfile = styled.div`
     height: 53px;
     flex-shrink: 0;
     border-radius: 26.5px;
-    background: url(<path-to-image>), lightgray -3.07px -0.143px / 109.434% 100.538% no-repeat;
+    background: lightgray -3.07px -0.143px / 109.434% 100.538% no-repeat;
 `;
 
 const DropdownMenu = styled.div`

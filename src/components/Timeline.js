@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import { TailSpin } from 'react-loader-spinner';
 import ReactModal from 'react-modal';
 import { styled } from 'styled-components';
 import useSession from '../hooks/useSession.js';
@@ -9,8 +11,10 @@ import { Post } from './Post.js';
 import { Trending } from './Trending.js';
 
 export function Timeline({ from, updating, setUpdating, trending = true }) {
-  const [posts, setPosts] = useState('Loading');
+  const [lposts, setPosts] = useState('Loading');
   const [owner, setOwner] = useState(null);
+  const [hasMore, setHasMore] = useState(Array.isArray(lposts) ? lposts.length <= 10 : true);
+  const [loadingMore, setLoadingMore] = useState(true);
   const { session } = useSession();
   const token = session === null ? undefined : session.token;
 
@@ -23,11 +27,13 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
     server
       .get(from, { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
-        const [{ posts, ...rest }] = data;
-        const [{ owner }] = data;
-
-        setPosts(owner ? data : posts);
-        setOwner(!owner ? rest : null);
+        const { posts, ...owner } = Array.isArray(data) ? {} : data;
+        if (Array.isArray(posts)) {
+          setPosts([...posts, ...((typeof data === "string" || Array.isArray(data)) ? data : posts)]);
+        } else {
+        }
+        setPosts((typeof data === "string" || Array.isArray(data)) ? data : posts);
+        setOwner(Array.isArray(data) ? null : owner);
       })
       .catch((err) => {
         setPosts(null);
@@ -35,6 +41,28 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
       });
     setPosts('Loading');
   }, [updating, from, token]);
+
+  const scrollAction = () => {
+    console.log("Call a Scroll Action");
+    if (loadingMore) {
+      setLoadingMore(false);
+      server
+        .get(`${from}?offset=${lposts.length}`, { headers: { Authorization: `Bearer ${token}` } })
+        .then(({ data }) => {
+          const { posts, ...owner } = Array.isArray(data) ? {} : data;
+          const loadPosts = [...lposts, ...((typeof data === "string" || Array.isArray(data)) ? data : posts)];
+          setPosts(loadPosts);
+          setOwner(Array.isArray(data) ? null : owner);
+          setHasMore((Array.isArray(data) ? data.length : posts.length) === 10)
+          setLoadingMore(true);
+          console.log(`Set new posts, more ${posts?.length}`);
+        })
+        .catch((err) => {
+          setPosts(null);
+          console.log(err);
+        });
+    }
+  }
 
   const deletePost = () => {
     setIsDeleting(true);
@@ -77,16 +105,36 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
   return (
     <TimelineContainer>
       <main>
-        {posts === 'Loading' && <LogH2 data-test="message">Loading</LogH2>}
-        {Array.isArray(posts) && posts.length === 0 && <LogH2 data-test="message">There are no posts yet</LogH2>}
-        {posts === null && (
+        {(typeof lposts === 'string') && <LogH2 data-test="message">{lposts}</LogH2>}
+        {Array.isArray(lposts) && lposts.length === 0 && <LogH2 data-test="message">There are no posts yet</LogH2>}
+        {lposts === null && (
           <LogH2 data-test="message">
             An error occured while trying to fetch the posts, please refresh the page
           </LogH2>
         )}
-        {Array.isArray(posts) && (
-          <ul>
-            {posts.map((p) => (
+        {Array.isArray(lposts) && (
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={scrollAction}
+            hasMore={hasMore}
+            loader={
+              <div className="loader" key={lposts.length % 2}>
+                <TailSpin
+                  height="36"
+                  width="36"
+                  color="#6D6D6D"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                />
+                <h2>Loading more posts...</h2>
+              </div>
+            }
+          >
+            {<ul>
+              {lposts.map((p) => (
               <Post
                 id={p.id}
                 key={p.id}
@@ -94,6 +142,7 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
                 link={p.link}
                 owner={owner || p.owner}
                 likes={p.likes}
+                repostCount={p.repostCount}
                 setters={setters}
                 updating={updating}
                 isliked={p.isLiked}
@@ -103,7 +152,8 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
                 totalcomms={p.totalcomms}
               />
             ))}
-          </ul>
+            </ul>}
+          </InfiniteScroll>
         )}
         <ReactModal
           isOpen={isModalOpen}
@@ -171,11 +221,29 @@ const TimelineContainer = styled.div`
 
   main {
     width: 100%;
-    > ul {
-      width: 100%;
-      ${center}
-      flex-direction: column;
-      gap: 16px;
+    > div {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        ul {
+          width: 100%;
+          ${center}
+          flex-direction: column;
+          gap: 16px;
+       }
+    }
+    .loader {
+        margin: 83px auto 308px;
+        ${center}
+        flex-direction: column;
+        h2 {
+        color: #6D6D6D;
+        font-size: 22px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        letter-spacing: 1.1px;
+      }
     }
   }
   @media (min-width: 833px) {
