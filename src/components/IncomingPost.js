@@ -9,7 +9,6 @@ export function IncomingPost() {
     const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
     const token = session === null ? undefined : session.token;
     const id = session === null ? undefined : session.id;
-    const [previousCount, setPreviousCount] = useState(0);
 
     useEffect(() => {
         const fetchPostsAndUpdateCounter = () => {
@@ -19,9 +18,8 @@ export function IncomingPost() {
                     const currentCount = response.data.length;
                     if (!initialFetchCompleted) {
                         setInitialFetchCompleted(true);
-                    } else if (currentCount !== previousCount) {
-                        setCounter(currentCount - previousCount);
-                        setPreviousCount(currentCount);
+                    } else {
+                        setCounter(currentCount - counter);
                     }
                 })
                 .catch((err) => {
@@ -36,7 +34,7 @@ export function IncomingPost() {
         return () => {
             clearInterval(intervalId);
         };
-    }, [token, id, previousCount, initialFetchCompleted]);
+    }, [token, id, counter, initialFetchCompleted]);
 
     const handleContainerClick = () => {
         if (counter > 0) {
@@ -66,7 +64,6 @@ const IncomingPostContainer = styled.div`
     display: ${(props) => (props.shouldHide ? 'none' : 'flex')};
     justify-content: center;
     align-items: center;
-    cursor: ${(props) => (props.shouldHide ? 'default' : 'pointer')};
 
     h2 {
         color: #fff;
