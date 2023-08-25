@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { NavAvatar } from '../components/Avatar.js';
 import { Header } from '../components/Header.js';
 import { Timeline } from '../components/Timeline.js';
 import useSession from '../hooks/useSession.js';
+import { followService } from '../services/apiUser.js';
 import { server } from '../services/utils.js';
 import { PageH1, center } from '../style/utils';
-import { NavAvatar } from '../components/Avatar.js';
-import { followService } from '../services/apiUser.js';
 
 export function UserPage() {
   const { id } = useParams();
