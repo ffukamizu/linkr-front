@@ -16,6 +16,7 @@ export function Comments(){
     function postComment(){
         alert(`Postei o comment ${inputComment}`)
     }
+    
     function handleKeyDown(e){
         if(e.key === 'Enter'){
             postComment()
