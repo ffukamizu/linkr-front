@@ -12,17 +12,19 @@ import { editService, extractMetadata, likePost } from '../services/apiPost';
 import { center } from '../style/utils';
 import { Form } from './CreatePost';
 import { AiOutlineComment } from "react-icons/ai";
+import { Comments } from './Comments';
 
-export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker, srliker, setters }) {
+export function Post({ id, text, link, likes, owner, updating, isliked, mrliker, srliker, setters }) {
   const [ setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating ] = setters;
   const { session } = useContext(SessionContext);
   const [localNumLikes, setlocalNumLikes] = useState(Number(likes));
-  const [localIsLiked, setLocalIsLiked] = useState(isLiked);
+  const [localIsLiked, setLocalIsLiked] = useState(isliked);
   const [isPublishing, setIsPublishing] = useState();
   const [isEditing, setIsEditin] = useState(false);
   const [editValue, setEditValue] = useState('');
   const [awaitLike, setAwaitLike] = useState(false);
   const [comments, setComments] = useState([])
+  const [showComs, setShowComs] = useState(false)
 
   const inputRef = useRef(null);
   const [linkPreview, setLinkPreview] = useState(null);
@@ -102,9 +104,11 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
 
   function getComments(id){
     console.log(id)
+    setShowComs(!showComs)
   }
 
   return (
+    <PostOutterContainer>
     <PostContainer data-test="post">
       <LikesDiv>
         <img src={owner.photo} alt="User" />
@@ -113,7 +117,7 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
         ) : (
           <FiHeart data-test="like-btn" onClick={() => handleLike(id)} size="20px" color="#ffffff" />
         )}
-        <p data-test="counter" data-tooltip-id={`Likes${id}`} isLiked={localIsLiked}>
+        <p data-test="counter" data-tooltip-id={`Likes${id}`}>
           {localNumLikes} likes
         </p>
         <Tooltip
@@ -200,10 +204,34 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
         )}
       </div>
     </PostContainer>
+    {showComs && <Comments/>}
+
+    </PostOutterContainer>
   );
 }
 
-const PostContainer = styled.li`
+const PostOutterContainer = styled.li`
+  position: relative;
+  display:flex;
+  flex-direction:column;
+  ${center}
+  gap: 0;
+  max-width: 611px;
+  width: 100%;
+  padding: 0;
+  background-color: #1E1E1E;
+  text-align: start;
+  @media (min-width: 625px) {
+    width: 100%;
+    max-width: 611px;
+    min-width: 511px;
+    border-radius: 16px;
+    padding: 0;
+    gap: 0;
+  }
+`;
+
+const PostContainer = styled.div`
   position: relative;
   ${center}
   gap: 14px;
