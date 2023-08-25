@@ -24,7 +24,8 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
       .get(from, { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
         const { posts, ...owner } = Array.isArray(data) ? {} : data;
-        setPosts(Array.isArray(data) ? data : posts);
+        console.log(data);
+        setPosts((typeof data === "string" || Array.isArray(data)) ? data : posts);
         setOwner(Array.isArray(data) ? null : owner);
       })
       .catch((err) => {
@@ -75,7 +76,7 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
   return (
     <TimelineContainer>
       <main>
-        {posts === 'Loading' && <LogH2 data-test="message">Loading</LogH2>}
+        {(typeof posts === 'string') && <LogH2 data-test="message">{posts}</LogH2>}
         {Array.isArray(posts) && posts.length === 0 && <LogH2 data-test="message">There are no posts yet</LogH2>}
         {posts === null && (
           <LogH2 data-test="message">
