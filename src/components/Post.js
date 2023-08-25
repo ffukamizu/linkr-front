@@ -8,13 +8,13 @@ import reactStringReplace from 'react-string-replace';
 import { Tooltip } from 'react-tooltip';
 import { styled } from 'styled-components';
 import SessionContext from '../contexts/SessionContext';
-import { editService, extractMetadata, likePost } from '../services/apiPost';
+import { editService, extractMetadata, likePost, getComms } from '../services/apiPost';
 import { center } from '../style/utils';
 import { Form } from './CreatePost';
 import { AiOutlineComment } from "react-icons/ai";
 import { Comments } from './Comments';
 
-export function Post({ id, text, link, likes, owner, updating, isliked, mrliker, srliker, setters }) {
+export function Post({ id, text, link, likes, owner, updating, isliked, mrliker, srliker, setters, totalcomms }) {
   const [ setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating ] = setters;
   const { session } = useContext(SessionContext);
   const [localNumLikes, setlocalNumLikes] = useState(Number(likes));
@@ -25,6 +25,7 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
   const [awaitLike, setAwaitLike] = useState(false);
   const [comments, setComments] = useState([])
   const [showComs, setShowComs] = useState(false)
+  const [localTotalComms, setLocalTotalComms] = useState(Number(totalcomms))
 
   const inputRef = useRef(null);
   const [linkPreview, setLinkPreview] = useState(null);
@@ -39,14 +40,12 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
       )
       .catch((err) => {
         setLinkPreview(null);
-      });
-  }, [link]);
+      })
 
-  useEffect(() => {
-    if (isEditing) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
+      if (isEditing) {
+        inputRef.current.focus();
+      }
+  }, [link,isEditing,id]);
 
   const handleEdit = () => {
     setEditValue(text);
@@ -103,7 +102,15 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
   };
 
   function getComments(id){
-    console.log(id)
+    getComms(session.token, id)
+    .then((res)=>{
+      console.log(res.data)
+      setComments(res.data)
+      setLocalTotalComms(res.data.length)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
     setShowComs(!showComs)
   }
 
@@ -149,8 +156,8 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
             zIndex: '10',
           }}
         />
-        <AiOutlineComment onClick={()=> getComments(id)}/>
-        <p>{comments.length} comments</p>
+        <AiOutlineComment data-test="comment-btn" onClick={()=> getComments(id)}/>
+        <p data-test="comment-counter" >{localTotalComms} comments</p>
         <FaRetweet data-test="repost-btn" onClick={repost} />
         <p data-test="repost-counter">{`0 re-posts`}</p>
       </LikesDiv>
@@ -204,7 +211,7 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
         )}
       </div>
     </PostContainer>
-    {showComs && <Comments/>}
+    {showComs && <Comments id={id} comments={comments} setComments={setComments}/>}
 
     </PostOutterContainer>
   );

@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { styled } from 'styled-components';
 import SessionContext from '../contexts/SessionContext';
-import { center } from '../style/utils';
 import SendImg from '../assets/cil_send.svg'
+import { postComment } from '../services/apiPost';
 
-export function Comments(){
+export function Comments({ id , comments , setComments}){
     const { session } = useContext(SessionContext);
     const [inputComment, setInputComment] = useState('')
 
@@ -13,28 +13,88 @@ export function Comments(){
         console.log(e.target.value)
     }
     
-    function postComment(){
-        alert(`Postei o comment ${inputComment}`)
+    function handlePostComm(){
+        const commObj = {
+            comment: inputComment,
+            postId: id
+        }
+        postComment(session.token, commObj)
+            .then((res) => {
+                console.log(res)
+                setComments(res.data)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        setInputComment("")
     }
-    
+
     function handleKeyDown(e){
         if(e.key === 'Enter'){
-            postComment()
+            handlePostComm()
         }
     }
     return(
-        <SCCommsBox>
+        <SCCommsBox data-test="comment-box">
+            {comments.map((c) => 
+            <SCCommentBox data-test="comment">
+                <SCUserPic src={c.photo}/>
+                <SCCommentContent>
+                    <SCUserName>{c.name}</SCUserName>
+                    <SCCommentText>{c.comment}</SCCommentText>
+                </SCCommentContent>
+            </SCCommentBox>
+            )}
             {/*Aqui fazer o map de comentários */}
             <SCInsertCommBox>
                 <SCUserPic src={`${session.photo}`}/>
                 <SCCommInputBox>
-                    <SCCommInput onKeyDown={handleKeyDown} name='inputComment' value={inputComment} onChange={handleInput} placeholder='write a comment...'/>
-                    <SCSendImg src={SendImg} onClick={postComment}/>
+                    <SCCommInput data-test="comment-input" onKeyDown={handleKeyDown} name='inputComment' value={inputComment} onChange={handleInput} placeholder='write a comment...'/>
+                    <SCSendImg data-test="comment-submit" src={SendImg} onClick={handlePostComm}/>
                 </SCCommInputBox>
             </SCInsertCommBox>
         </SCCommsBox>
     )
 }
+
+const SCCommentText = styled.p`
+    color: #ACACAC;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; 
+`
+
+const SCUserName = styled.p`
+    color: #F3F3F3;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal; 
+    margin-bottom: 3px;
+`
+
+const SCCommentContent = styled.div`
+    box-sizing:border-box;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:right;
+    align-items:start;
+`
+
+const SCCommentBox = styled.div`
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:flex-start;
+    align-items:top;
+    border-bottom:1px solid #353535;
+    padding:15px 0px;
+`
 
 const SCSendImg = styled.img`
     height:16px;
@@ -90,6 +150,7 @@ const SCUserPic = styled.img`
     width: 39px;
     height: 39px;
     border-radius: 304px; 
+    margin-right:14px;
 `
 
 const SCInsertCommBox = styled.div`
@@ -99,7 +160,6 @@ const SCInsertCommBox = styled.div`
     display:flex;
     justify-content:flex-start;
     align-items:center;
-    gap:14px;
 `
 
 const SCCommsBox = styled.div`
