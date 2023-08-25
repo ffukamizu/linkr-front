@@ -37,7 +37,7 @@ const CreatePost = ({userImage, updating, setUpdating}) => {
 
   return (
     <SCNewPostContainer data-test="publish-box">
-      <PostAvatar userImage={userImage}/>
+      <PostAvatar userImage={userImage || session.photo}/>
       <h1>What are you going to share today?</h1>
       <Form onSubmit={publish}>
         <input data-test="link"
