@@ -6,20 +6,17 @@ import useSession from '../hooks/useSession.js';
 export function IncomingPost() {
     const { session } = useSession();
     const [counter, setCounter] = useState(0);
-    const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
     const token = session === null ? undefined : session.token;
     const id = session === null ? undefined : session.id;
 
     useEffect(() => {
-        const fetchPostsAndUpdateCounter = () => {
+        const fetchPosts = () => {
             server
                 .get(`/posts/user/${id}`, { headers: { Authorization: `Bearer ${token}` } })
                 .then((response) => {
-                    const currentCount = response.data.length;
-                    if (!initialFetchCompleted) {
-                        setInitialFetchCompleted(true);
-                    } else {
-                        setCounter(currentCount - counter);
+                    const newCount = response.data.length - counter;
+                    if (newCount > 0) {
+                        setCounter(newCount);
                     }
                 })
                 .catch((err) => {
@@ -27,14 +24,14 @@ export function IncomingPost() {
                 });
         };
 
-        fetchPostsAndUpdateCounter();
+        fetchPosts();
 
-        const intervalId = setInterval(fetchPostsAndUpdateCounter, 15000);
+        const intervalId = setInterval(fetchPosts, 15000);
 
         return () => {
             clearInterval(intervalId);
         };
-    }, [token, id, counter, initialFetchCompleted]);
+    }, [token, id, counter]);
 
     const handleContainerClick = () => {
         if (counter > 0) {
@@ -46,7 +43,7 @@ export function IncomingPost() {
         <IncomingPostContainer
             data-test="load-btn"
             onClick={handleContainerClick}
-            shouldHide={!initialFetchCompleted || counter === 0}>
+            shouldHide={counter === 0}>
             <h2>{counter} new posts, load more!</h2>
             <div>
                 <ion-icon name="reload-outline"></ion-icon>
