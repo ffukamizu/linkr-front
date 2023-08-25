@@ -20,12 +20,14 @@ export function Header() {
                     <StyledLogo>Linkr</StyledLogo>
                 </Link>
                 <Search />
-                <UserContainer>
-                    <MenuArrow onClick={toggleDropdown}>
+                <UserContainer
+                    onClick={toggleDropdown}
+                    data-test="avatar">
+                    <MenuArrow>
                         <ion-icon name={dropdownOpen ? 'chevron-up-outline' : 'chevron-down-outline'}></ion-icon>
                     </MenuArrow>
                     {session.photo && (
-                        <UserProfile onClick={toggleDropdown}>
+                        <UserProfile>
                             <NavAvatar userImage={session.photo} />
                         </UserProfile>
                     )}
