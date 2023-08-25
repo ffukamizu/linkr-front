@@ -12,14 +12,23 @@ export function Comments(){
         setInputComment(e.target.value)
         console.log(e.target.value)
     }
+    
+    function postComment(){
+        alert(`Postei o comment ${inputComment}`)
+    }
+    function handleKeyDown(e){
+        if(e.key === 'Enter'){
+            postComment()
+        }
+    }
     return(
         <SCCommsBox>
             {/*Aqui fazer o map de comentários */}
             <SCInsertCommBox>
                 <SCUserPic src={`${session.photo}`}/>
                 <SCCommInputBox>
-                    <SCCommInput name='inputComment' value={inputComment} onChange={handleInput} placeholder='write a comment...'/>
-                    <SCSendImg src={SendImg}/>
+                    <SCCommInput onKeyDown={handleKeyDown} name='inputComment' value={inputComment} onChange={handleInput} placeholder='write a comment...'/>
+                    <SCSendImg src={SendImg} onClick={postComment}/>
                 </SCCommInputBox>
             </SCInsertCommBox>
         </SCCommsBox>
