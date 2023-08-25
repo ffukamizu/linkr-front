@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { AiOutlineComment } from "react-icons/ai";
 import { FaPen, FaRetweet } from 'react-icons/fa';
 import { FcLike } from 'react-icons/fc';
 import { FiHeart } from 'react-icons/fi';
@@ -8,11 +9,10 @@ import reactStringReplace from 'react-string-replace';
 import { Tooltip } from 'react-tooltip';
 import { styled } from 'styled-components';
 import SessionContext from '../contexts/SessionContext';
-import { editService, extractMetadata, likePost, getComms } from '../services/apiPost';
+import { editService, extractMetadata, getComms, likePost } from '../services/apiPost';
 import { center } from '../style/utils';
-import { Form } from './CreatePost';
-import { AiOutlineComment } from "react-icons/ai";
 import { Comments } from './Comments';
+import { Form } from './CreatePost';
 
 export function Post({ id, text, link, likes, owner, updating, isliked, mrliker, srliker, setters, totalcomms }) {
   const [ setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating ] = setters;
@@ -28,10 +28,11 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
   const [localTotalComms, setLocalTotalComms] = useState(Number(totalcomms))
 
   const inputRef = useRef(null);
-  const [linkPreview, setLinkPreview] = useState(null);
+  const [linkPreview, setLinkPreview] = useState(link);
   const { url = link, title = '', description = '', image = '' } = linkPreview || {};
 
   useEffect(() => {
+    if (typeof link === 'string') {
     extractMetadata(link)
       .then(
         ({ data: { url, title, description, images: [image]} }) => {
@@ -41,6 +42,7 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
       .catch((err) => {
         setLinkPreview(null);
       })
+    }
 
       if (isEditing) {
         inputRef.current.focus();
@@ -285,6 +287,9 @@ const PostContainer = styled.div`
       line-height: 23px;
       letter-spacing: 0em;
     }
+    p.text {
+      max-width: 503px;
+    }
     p {
       font-size: 17px;
       line-height: 20px;
@@ -425,11 +430,12 @@ const LinkA = styled.a`
         font-size: 11px;
         line-height: 13px;
         letter-spacing: 0em;
+        margin: 6px 0px 12px;
       }
       span {
         flex: 1;
         width: 100%;
-        padding: 0px 0px 0px 19px;
+        padding: 0px 0px 0px 0px;
       }
     }
     img {
