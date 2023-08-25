@@ -38,3 +38,15 @@ export const repostService = async (id, token) => {
 
   return axios.post(`${API_URL}/re-post/${id}`, {}, config);
 };
+
+export const postComment = async (token, obj) => {
+  const config = { headers: { Authorization: `Bearer ${token}` }};
+
+  return axios.post(`${API_URL}/comment`, obj , config)
+}
+
+export const getComms = async (token, postId) =>{
+  const config = { headers: { Authorization: `Bearer ${token}` }};
+
+  return axios.get(`${API_URL}/comments/${postId}`, config)
+}

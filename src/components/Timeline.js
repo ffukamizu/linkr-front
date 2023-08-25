@@ -96,10 +96,11 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
                 likes={p.likes}
                 setters={setters}
                 updating={updating}
-                isLiked={p.isLiked}
+                isliked={p.isLiked}
                 mrliker={p.mrliker}
                 srliker={p.srliker}
                 isModalOpen={isModalOpen}
+                totalcomms={p.totalcomms}
               />
             ))}
           </ul>

@@ -14,12 +14,10 @@ export default function SigUpPage(){
     
     function handleForm(e){
         setForm({...form,[e.target.name]: e.target.value})
-        console.log(form)
     }
     
     function handleSignUp(e){
         e.preventDefault()
-        console.log("oi")
         if(form.email === "" || form.password === "" || form.name === "" || form.photo === "") return alert("Por favor, preencha todos os campos")
         setWaitAPI(true)
         apiAuth.signUp(form)

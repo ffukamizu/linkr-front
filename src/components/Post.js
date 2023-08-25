@@ -8,19 +8,24 @@ import reactStringReplace from 'react-string-replace';
 import { Tooltip } from 'react-tooltip';
 import { styled } from 'styled-components';
 import SessionContext from '../contexts/SessionContext';
-import { editService, extractMetadata, likePost } from '../services/apiPost';
+import { editService, extractMetadata, likePost, getComms } from '../services/apiPost';
 import { center } from '../style/utils';
 import { Form } from './CreatePost';
+import { AiOutlineComment } from "react-icons/ai";
+import { Comments } from './Comments';
 
-export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker, srliker, setters }) {
+export function Post({ id, text, link, likes, owner, updating, isliked, mrliker, srliker, setters, totalcomms }) {
   const [ setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating ] = setters;
   const { session } = useContext(SessionContext);
   const [localNumLikes, setlocalNumLikes] = useState(Number(likes));
-  const [localIsLiked, setLocalIsLiked] = useState(isLiked);
+  const [localIsLiked, setLocalIsLiked] = useState(isliked);
   const [isPublishing, setIsPublishing] = useState();
   const [isEditing, setIsEditin] = useState(false);
   const [editValue, setEditValue] = useState('');
   const [awaitLike, setAwaitLike] = useState(false);
+  const [comments, setComments] = useState([])
+  const [showComs, setShowComs] = useState(false)
+  const [localTotalComms, setLocalTotalComms] = useState(Number(totalcomms))
 
   const inputRef = useRef(null);
   const [linkPreview, setLinkPreview] = useState(null);
@@ -35,14 +40,12 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
       )
       .catch((err) => {
         setLinkPreview(null);
-      });
-  }, [link]);
+      })
 
-  useEffect(() => {
-    if (isEditing) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
+      if (isEditing) {
+        inputRef.current.focus();
+      }
+  }, [link,isEditing,id]);
 
   const handleEdit = () => {
     setEditValue(text);
@@ -98,19 +101,34 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
     setIsModalOpen(true);
   };
 
+  function getComments(id){
+    getComms(session.token, id)
+    .then((res)=>{
+      console.log(res.data)
+      setComments(res.data)
+      setLocalTotalComms(res.data.length)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    setShowComs(!showComs)
+  }
+
   return (
+    <PostOutterContainer>
     <PostContainer data-test="post">
       <LikesDiv>
         <img src={owner.photo} alt="User" />
         {localIsLiked ? (
-          <FcLike onClick={() => handleLike(id)} size="20px" />
+          <FcLike data-test="like-btn" onClick={() => handleLike(id)} size="20px" />
         ) : (
-          <FiHeart onClick={() => handleLike(id)} size="20px" color="#ffffff" />
+          <FiHeart data-test="like-btn" onClick={() => handleLike(id)} size="20px" color="#ffffff" />
         )}
-        <p data-tooltip-id={`Likes${id}`} isLiked={localIsLiked}>
+        <p data-test="counter" data-tooltip-id={`Likes${id}`}>
           {localNumLikes} likes
         </p>
         <Tooltip
+          data-test="tooltip"
           id={`Likes${id}`}
           place="bottom"
           content={
@@ -138,7 +156,8 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
             zIndex: '10',
           }}
         />
-
+        <AiOutlineComment data-test="comment-btn" onClick={()=> getComments(id)}/>
+        <p data-test="comment-counter" >{localTotalComms} comments</p>
         <FaRetweet data-test="repost-btn" onClick={repost} />
         <p data-test="repost-counter">{`0 re-posts`}</p>
       </LikesDiv>
@@ -192,10 +211,34 @@ export function Post({ id, text, link, likes, owner, updating, isLiked, mrliker,
         )}
       </div>
     </PostContainer>
+    {showComs && <Comments id={id} comments={comments} setComments={setComments}/>}
+
+    </PostOutterContainer>
   );
 }
 
-const PostContainer = styled.li`
+const PostOutterContainer = styled.li`
+  position: relative;
+  display:flex;
+  flex-direction:column;
+  ${center}
+  gap: 0;
+  max-width: 611px;
+  width: 100%;
+  padding: 0;
+  background-color: #1E1E1E;
+  text-align: start;
+  @media (min-width: 625px) {
+    width: 100%;
+    max-width: 611px;
+    min-width: 511px;
+    border-radius: 16px;
+    padding: 0;
+    gap: 0;
+  }
+`;
+
+const PostContainer = styled.div`
   position: relative;
   ${center}
   gap: 14px;
@@ -275,6 +318,7 @@ const LikesDiv = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    white-space:nowrap;
   }
   @media (min-width: 625px) {
     img {
