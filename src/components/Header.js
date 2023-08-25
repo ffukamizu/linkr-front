@@ -12,8 +12,7 @@ export function Header() {
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
-    const photo =
-        'https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8fDA%3D&w=1000&q=80';
+
     return (
         <HeaderContainer>
             <div>
@@ -25,9 +24,9 @@ export function Header() {
                     <MenuArrow onClick={toggleDropdown}>
                         <ion-icon name={dropdownOpen ? 'chevron-up-outline' : 'chevron-down-outline'}></ion-icon>
                     </MenuArrow>
-                    {photo && (
+                    {session.photo && (
                         <UserProfile onClick={toggleDropdown}>
-                            <NavAvatar userImage={photo} />
+                            <NavAvatar userImage={session.photo} />
                         </UserProfile>
                     )}
                     {dropdownOpen && (

@@ -42,6 +42,7 @@ export function IncomingPost() {
 
     return (
         <IncomingPostContainer
+            data-test="load-btn"
             onClick={handleContainerClick}
             shouldHide={counter === 0}>
             <h2>{counter} new posts, load more!</h2>
