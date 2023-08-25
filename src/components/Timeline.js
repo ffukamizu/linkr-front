@@ -92,6 +92,7 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
                 link={p.link}
                 owner={owner || p.owner}
                 likes={p.likes}
+                repostCount={p.repostCount}
                 setters={setters}
                 updating={updating}
                 isliked={p.isLiked}

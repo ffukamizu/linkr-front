@@ -14,7 +14,7 @@ import { center } from '../style/utils';
 import { Comments } from './Comments';
 import { Form } from './CreatePost';
 
-export function Post({ id, text, link, likes, owner, updating, isliked, mrliker, srliker, setters, totalcomms }) {
+export function Post({ id, text, link, likes, owner, updating, isliked, mrliker, srliker, setters, totalcomms, repostCount }) {
   const [ setIsModalOpen, setIdToDelete, setIdToRepost, setUpdating ] = setters;
   const { session } = useContext(SessionContext);
   const [localNumLikes, setlocalNumLikes] = useState(Number(likes));
@@ -161,7 +161,7 @@ export function Post({ id, text, link, likes, owner, updating, isliked, mrliker,
         <AiOutlineComment data-test="comment-btn" onClick={()=> getComments(id)}/>
         <p data-test="comment-counter" >{localTotalComms} comments</p>
         <FaRetweet data-test="repost-btn" onClick={repost} />
-        <p data-test="repost-counter">{`0 re-posts`}</p>
+        <p data-test="repost-counter">{`${repostCount} re-posts`}</p>
       </LikesDiv>
       <div>
         <h2 data-test="username">{owner.name}</h2>
