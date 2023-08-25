@@ -13,7 +13,7 @@ import { Trending } from './Trending.js';
 export function Timeline({ from, updating, setUpdating, trending = true }) {
   const [lposts, setPosts] = useState('Loading');
   const [owner, setOwner] = useState(null);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(Array.isArray(lposts) ? lposts.length <= 10 : true);
   const [loadingMore, setLoadingMore] = useState(true);
   const { session } = useSession();
   const token = session === null ? undefined : session.token;
@@ -28,7 +28,11 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
       .get(from, { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
         const { posts, ...owner } = Array.isArray(data) ? {} : data;
-        setPosts([...posts, ...((typeof data === "string" || Array.isArray(data)) ? data : posts)]);
+        if (Array.isArray(posts)) {
+          setPosts([...posts, ...((typeof data === "string" || Array.isArray(data)) ? data : posts)]);
+        } else {
+        }
+        setPosts((typeof data === "string" || Array.isArray(data)) ? data : posts);
         setOwner(Array.isArray(data) ? null : owner);
       })
       .catch((err) => {
@@ -39,6 +43,7 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
   }, [updating, from, token]);
 
   const scrollAction = () => {
+    console.log("Call a Scroll Action");
     if (loadingMore) {
       setLoadingMore(false);
       server
@@ -50,6 +55,7 @@ export function Timeline({ from, updating, setUpdating, trending = true }) {
           setOwner(Array.isArray(data) ? null : owner);
           setHasMore((Array.isArray(data) ? data.length : posts.length) === 10)
           setLoadingMore(true);
+          console.log(`Set new posts, more ${posts?.length}`);
         })
         .catch((err) => {
           setPosts(null);
