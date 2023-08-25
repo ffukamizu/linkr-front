@@ -4,7 +4,7 @@ import SessionContext from '../contexts/SessionContext';
 import SendImg from '../assets/cil_send.svg'
 import { postComment } from '../services/apiPost';
 
-export function Comments({ id , comments , setComments}){
+export function Comments({ id , owner , comments , setComments}){
     const { session } = useContext(SessionContext);
     const [inputComment, setInputComment] = useState('')
 
@@ -40,7 +40,13 @@ export function Comments({ id , comments , setComments}){
             <SCCommentBox data-test="comment">
                 <SCUserPic src={c.photo}/>
                 <SCCommentContent>
-                    <SCUserName>{c.name}</SCUserName>
+                    <SCUserName>
+                        {c.name}  
+                        <SCCommentUserDesc>
+                            {c.userId === owner.id ? "   • post’s author":
+                            c.follow !== null ? "   • following" : ""}
+                        </SCCommentUserDesc>
+                    </SCUserName>
                     <SCCommentText>{c.comment}</SCCommentText>
                 </SCCommentContent>
             </SCCommentBox>
@@ -56,6 +62,15 @@ export function Comments({ id , comments , setComments}){
         </SCCommsBox>
     )
 }
+
+const SCCommentUserDesc = styled.span`
+    color: #565656;
+    font-family: Lato;
+    font-size: 14px;    
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; 
+`
 
 const SCCommentText = styled.p`
     color: #ACACAC;
