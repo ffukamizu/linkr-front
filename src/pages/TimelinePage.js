@@ -5,6 +5,7 @@ import { Header } from '../components/Header.js';
 import { Timeline } from '../components/Timeline.js';
 import { Trending } from '../components/Trending.js';
 import { PageH1, center } from '../style/utils';
+import { IncomingPost } from '../components/IncomingPost.js';
 
 export function TimelinePage() {
   const [updating, setUpdating] = useState([]);
@@ -16,6 +17,7 @@ export function TimelinePage() {
         <div>
           <PageH1>timeline</PageH1>
           <CreatePost updating={updating} setUpdating={setUpdating}/>
+          <IncomingPost/>
           <Timeline from="/posts" trending={false} updating={updating} setUpdating={setUpdating}/>
         </div>
         <aside>
