@@ -6,16 +6,20 @@ import useSession from '../hooks/useSession.js';
 export function IncomingPost() {
     const { session } = useSession();
     const [counter, setCounter] = useState(0);
+    const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
     const token = session === null ? undefined : session.token;
+    const id = session === null ? undefined : session.id;
     const [previousCount, setPreviousCount] = useState(0);
 
     useEffect(() => {
         const fetchPostsAndUpdateCounter = () => {
             server
-                .get('/posts', { headers: { Authorization: `Bearer ${token}` } })
+                .get(`/posts/user/${id}`, { headers: { Authorization: `Bearer ${token}` } })
                 .then((response) => {
                     const currentCount = response.data.length;
-                    if (currentCount !== previousCount) {
+                    if (!initialFetchCompleted) {
+                        setInitialFetchCompleted(true);
+                    } else if (currentCount !== previousCount) {
                         setCounter(currentCount - previousCount);
                         setPreviousCount(currentCount);
                     }
@@ -32,7 +36,7 @@ export function IncomingPost() {
         return () => {
             clearInterval(intervalId);
         };
-    }, [token, previousCount]);
+    }, [token, id, previousCount, initialFetchCompleted]);
 
     const handleContainerClick = () => {
         if (counter > 0) {
@@ -44,7 +48,7 @@ export function IncomingPost() {
         <IncomingPostContainer
             data-test="load-btn"
             onClick={handleContainerClick}
-            shouldHide={counter === 0}>
+            shouldHide={!initialFetchCompleted || counter === 0}>
             <h2>{counter} new posts, load more!</h2>
             <div>
                 <ion-icon name="reload-outline"></ion-icon>
