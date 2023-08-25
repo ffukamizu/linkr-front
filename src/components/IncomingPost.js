@@ -64,6 +64,7 @@ const IncomingPostContainer = styled.div`
     display: ${(props) => (props.shouldHide ? 'none' : 'flex')};
     justify-content: center;
     align-items: center;
+    cursor: ${(props) => (props.shouldHide ? 'default' : 'pointer')};
 
     h2 {
         color: #fff;
